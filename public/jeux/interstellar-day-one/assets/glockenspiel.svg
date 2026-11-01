@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" preserveAspectRatio="none">
+  <defs><linearGradient id="metalBase" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b9c0c6"/>
+      <stop offset="35%" stop-color="#e8ebed"/>
+      <stop offset="100%" stop-color="#9da4ab"/>
+    </linearGradient></defs>
+  <g>
+        <rect x="6" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="75" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="75" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(75,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Do</text>
+  </g>
+      </g><g>
+        <rect x="156" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="225" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="225" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(225,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Ré</text>
+  </g>
+      </g><g>
+        <rect x="306" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="375" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="375" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(375,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Mi</text>
+  </g>
+      </g><g>
+        <rect x="456" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="525" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="525" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(525,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Fa</text>
+  </g>
+      </g><g>
+        <rect x="606" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="675" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="675" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(675,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Sol</text>
+  </g>
+      </g><g>
+        <rect x="756" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="825" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="825" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(825,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">La</text>
+  </g>
+      </g><g>
+        <rect x="906" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="975" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="975" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(975,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Si</text>
+  </g>
+      </g><g>
+        <rect x="1056" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="1125" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="1125" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(1125,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Do</text>
+  </g>
+      </g><g>
+        <rect x="1206" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="1275" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="1275" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(1275,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Ré</text>
+  </g>
+      </g><g>
+        <rect x="1356" y="0" width="138" height="820" rx="3" fill="url(#metalBase)"/>
+        <circle cx="1425" cy="94.3" r="6" fill="#3a4047"/>
+        <circle cx="1425" cy="725.7" r="6" fill="#3a4047"/>
+        <g transform="translate(1425,580) scale(0.9375,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Mi</text>
+  </g>
+      </g>
+</svg>

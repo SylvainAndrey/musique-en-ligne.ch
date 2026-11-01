@@ -1,0 +1,76 @@
+---
+import type { MediaSection } from '../data/types';
+
+interface Props {
+  sections: MediaSection[];
+}
+const { sections } = Astro.props;
+---
+
+{sections.length > 0 && (
+  <div class="media-gallery">
+    {sections.map((section) => (
+      <div class="media-gallery__section">
+        <h3 class="media-gallery__title">{section.title}</h3>
+        <div class="media-gallery__grid">
+          {section.items.map((item) => (
+            <figure class="media-item">
+              {item.type === 'video' ? (
+                <video controls preload="none" src={item.src}></video>
+              ) : (
+                <div class="media-item__audio">
+                  <span class="media-item__audio-mark" aria-hidden="true">audio</span>
+                  <audio controls preload="none" src={item.src}></audio>
+                </div>
+              )}
+              <figcaption>{item.title}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+<style>
+  .media-gallery__section { margin-bottom: 2.5rem; }
+  .media-gallery__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--color-ink-soft);
+    margin-bottom: 1rem;
+  }
+  .media-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem 1.25rem;
+  }
+  .media-item {
+    margin: 0;
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+  }
+  .media-item video { width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  .media-item__audio {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  .media-item__audio audio { flex: 1; width: 100%; }
+  .media-item__audio-mark {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-ink-faint);
+    flex-shrink: 0;
+  }
+  .media-item figcaption {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+    border-top: 1px solid var(--color-border);
+  }
+</style>

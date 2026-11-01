@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.musique-en-ligne.ch/sitemap-index.xml

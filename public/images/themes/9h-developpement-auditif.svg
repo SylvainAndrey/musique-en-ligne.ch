@@ -1,0 +1,16 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#2b4433"/>
+  <g fill="none" stroke="#f3f0e8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- outer ear helix -->
+    <path d="M175,120 C225,124 246,175 235,220 C226,258 196,286 165,282 C142,279 132,260 140,244"/>
+    <!-- inner curve -->
+    <path d="M172,150 C200,155 210,182 200,205 C193,221 176,229 163,220" stroke-width="3.2"/>
+    <!-- earlobe -->
+    <path d="M140,244 C128,252 128,272 145,278 C156,282 165,275 165,265" stroke-width="3.2"/>
+  </g>
+  <g fill="none" stroke="#c98a52" stroke-width="3" stroke-linecap="round">
+    <path d="M96,190 C110,205 110,225 96,240"/>
+    <path d="M76,172 C100,195 100,235 76,258"/>
+  </g>
+  <path d="M56,155 C90,185 90,245 56,275" fill="none" stroke="#f3f0e8" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+</svg>

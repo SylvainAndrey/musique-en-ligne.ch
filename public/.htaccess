@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Impose une seule adresse canonique : https://www.musique-en-ligne.ch
+# (évite le contenu dupliqué détecté par Google Search Console sur les 4 variantes
+# http/https × avec/sans www).
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^musique-en-ligne\.ch$ [NC]
+RewriteRule ^ https://www.musique-en-ligne.ch%{REQUEST_URI} [L,R=301]

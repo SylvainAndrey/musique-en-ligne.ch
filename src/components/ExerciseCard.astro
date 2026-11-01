@@ -1,0 +1,28 @@
+---
+import type { ExerciseDef } from '../data/types';
+
+interface Props {
+  exercise: ExerciseDef;
+  hideTitle?: boolean;
+}
+const { exercise, hideTitle = false } = Astro.props;
+const isPlaceholder = exercise.engine === 'placeholder';
+const num = String(exercise.number).padStart(2, '0');
+---
+
+<article class="exo-card" id={`exercice-${exercise.number}`}>
+  <div class="exo-card__head">
+    <span class="exo-card__number">{num}</span>
+    <h3 class="exo-card__title">{hideTitle ? `Exercice ${exercise.number}` : exercise.title}</h3>
+    <span class="exo-card__badge">{isPlaceholder ? 'Bientôt interactif' : 'Interactif'}</span>
+  </div>
+  <p class="exo-card__instructions">{exercise.instructions}</p>
+
+  {isPlaceholder ? (
+    <p class="exo-card__soon">Version interactive à venir — en attendant, réalise cet exercice avec ton enseignant en classe.</p>
+  ) : (
+    <mel-exercise data-id={exercise.id}>
+      <script type="application/json" set:html={JSON.stringify({ id: exercise.id, engine: exercise.engine, data: exercise.data })} />
+    </mel-exercise>
+  )}
+</article>

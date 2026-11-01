@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="À propos" description="Sylvain Andrey, auteur du site Musique en ligne.">
+  <section class="container bio">
+    <p class="eyebrow">À propos</p>
+    <h1>Un site moderne conçu pour une pédagogie innovante</h1>
+    <div class="bio__flow">
+      <p class="bio__lead">
+        Musique en ligne rassemble les supports de cours crées par Sylvain Andrey et alignés tant
+        sur le PER que sur les différentes directives cantonales fribourgeoise et vaudoise pour
+        l'enseignement de la musique aux classes de 9ème, 10ème et 11ème Harmos sous une forme
+        interactive et accessible à tout moment.
+      </p>
+      <span class="bio__eyebrow">Auteur du site</span>
+      <img src="/images/sylvain-andrey.jpg" alt="Portrait de Sylvain Andrey" class="bio__photo" />
+      <h2>Sylvain Andrey</h2>
+      <p>
+        Né le 25 novembre 1990, Sylvain Andrey grandit à Lausanne dans une famille de
+        musiciens amateurs. Son parcours musical le mène à la Haute École de Musique de
+        Lausanne (HEMU), où il décroche un Bachelor en 2013 puis un Master de pédagogie
+        instrumentale en 2015, récompensé par le prix du meilleur récital de fin d'études.
+        Il se perfectionne ensuite à Zurich, à la Zürcher Hochschule der Künste (ZHdK) avec un
+        second Master of Arts obtenu avec mention en 2017.
+      </p>
+      <p>
+        Percussionniste professionnel, il collabore avec plusieurs orchestres suisses
+        (Berner Sinfonieorchester (BSO), Orchestre de Chambre de Lausanne (OCL), Orchestre
+        symphonique de Bienne/Soleure (TOBS), Swiss Orchestra et City Light Symphony Orchestra
+        entre autres). Il est également arrangeur pour la maison d'édition suisse « Hits in
+        Percussion ».
+      </p>
+      <p>
+        Parallèlement à sa carrière musicale, l'enseignement s'impose très tôt dans sa vie :
+        il donne ses premiers cours à 17 ans avant d'enseigner professionnellement la
+        percussion et la batterie dans de nombreuses écoles de musique romandes et
+        alémaniques dès 2013. Sylvain Andrey développe aussi ses propres méthodes
+        pédagogiques publiées en français et en allemand. Depuis 2024, il est également
+        invité comme « Gastdozent » à la Hochschule der Künste Bern (HKB) où il anime chaque
+        semestre de printemps un module destiné aux futurs enseignants.
+      </p>
+      <p>
+        Un tournant décisif survient en 2022, lorsqu'il accompagne une classe de 11ème Harmos
+        lors d'un camp de randonnée : cette expérience révèle son goût pour l'enseignement à
+        l'école obligatoire. En 2024, il concrétise ce nouveau projet professionnel en
+        rejoignant le Cycle d'orientation de la Glâne, à Romont (FR), où il enseigne la
+        musique à mi-temps à des classes de 9ème, 10ème et 11ème Harmos ainsi qu'à des
+        classes de soutien et une classe bilingue français-allemand. En 2026, il change
+        d'école pour rejoindre l'Établissement secondaire des Trois Sapins à Echallens.
+      </p>
+      <p>
+        Merci à Quentin Chevigny pour sa contribution au site internet au travers de
+        certains médias ayant contribué à l'émergence de ce nouvel outil pédagogique.
+      </p>
+    </div>
+  </section>
+
+  <section class="container contact">
+    <div class="contact__inner">
+      <p class="eyebrow">Contact</p>
+      <h2>Une question, une remarque ?</h2>
+      <p class="contact__lead">
+        Écris-moi via ce formulaire, qui ouvrira ton client de messagerie habituel, ou directement
+        à l'adresse <a href="mailto:sylvain.andrey@musique-en-ligne.ch">sylvain.andrey@musique-en-ligne.ch</a>.
+      </p>
+      <form id="contact-form" class="contact__form">
+        <label class="contact__field">
+          Nom
+          <input type="text" name="name" required />
+        </label>
+        <label class="contact__field">
+          Ton adresse e-mail
+          <input type="email" name="email" required />
+        </label>
+        <label class="contact__field">
+          Message
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+      </form>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script src="../../scripts/contact-form.ts"></script>
+
+<style>
+  .bio { padding-top: 3rem; padding-bottom: 4rem; }
+  .contact { padding-bottom: 4rem; }
+  .contact__inner { max-width: 60ch; }
+  .contact__lead { color: var(--color-ink-soft); margin-bottom: 1.75rem; }
+  .contact__form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .contact__field { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem; font-weight: 600; color: var(--color-ink); }
+  .contact__field input,
+  .contact__field textarea {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 400;
+    padding: 0.65em 0.9em;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    color: var(--color-ink);
+    resize: vertical;
+  }
+  .contact__field input:focus,
+  .contact__field textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  .contact__form .btn { align-self: flex-start; }
+  .bio__flow { overflow: hidden; }
+  .bio__photo {
+    float: right;
+    width: 300px;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    margin: 0 3.5rem 1.5rem 3.5rem;
+  }
+  .bio__lead { color: var(--color-ink-soft); font-size: 1.05rem; margin-bottom: 2.4rem; }
+  .bio__eyebrow { display: block; font-weight: 700; color: var(--color-accent); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .bio__flow h2 { margin: 0.3rem 0 0.8rem; }
+  .bio p { color: var(--color-ink-soft); }
+  .bio__flow p:not(.bio__lead) { max-width: 68ch; }
+  @media (max-width: 640px) {
+    .bio__photo { float: none; width: 100%; max-width: 260px; margin: 0 auto 1.5rem; }
+  }
+</style>

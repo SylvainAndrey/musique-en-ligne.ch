@@ -1,0 +1,15 @@
+/* Le "J" majuscule de Fraunces (même à opsz max, voir global.css) garde une
+   légère boucle de fantaisie : la hampe commence à courber avant d'arriver
+   en bas, puis le crochet final s'enroule sur lui-même. On remplace ce seul
+   glyphe (uniquement "J" majuscule, U+004A — pas "j" minuscule) par celui
+   d'une police système largement disponible, dont la hampe reste verticale
+   jusqu'en bas et ne se courbe qu'au niveau du crochet final. Si aucune de
+   ces polices locales n'est installée, ce @font-face échoue silencieusement
+   et le "J" de Fraunces s'affiche normalement (dégradation sans risque). */
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-weight: 100 900;
+  font-style: normal;
+  src: local('Georgia'), local('Iowan Old Style'), local('Times New Roman');
+  unicode-range: U+004A;
+}

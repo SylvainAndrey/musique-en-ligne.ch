@@ -1,0 +1,105 @@
+---
+import type { ThemeContent } from '../data/types';
+
+interface Props {
+  theme: ThemeContent;
+  index: number;
+}
+const { theme, index } = Astro.props;
+const href = `/${theme.grade}/${theme.slug}/`;
+const prefix = `${theme.grade}-${theme.slug}-`;
+const num = String(index).padStart(2, '0');
+---
+
+<a href={href} class="theme-card" style={`--card-accent: var(${theme.colorVar})`}>
+  {theme.heroImage && (
+    <img class="theme-card__thumb" src={theme.heroImage} alt="" loading="lazy" />
+  )}
+  <span class="theme-card__num">{num}</span>
+  <div class="theme-card__body">
+    <h3 class="theme-card__title">{theme.title}</h3>
+    <p class="theme-card__desc">{theme.description}</p>
+    <div class="theme-card__meta">
+      {!theme.interactive && <span class="theme-card__badge">Bientôt interactif</span>}
+      <div class="theme-card__progress" data-progress-prefix={prefix} data-progress-total={theme.exercises.length}>
+        <div class="theme-card__progress-track">
+          <div class="theme-card__progress-fill" data-progress-fill></div>
+        </div>
+        <span class="theme-card__progress-label" data-progress-label>{theme.exercises.length} exercice{theme.exercises.length !== 1 ? 's' : ''}</span>
+      </div>
+    </div>
+  </div>
+  <span class="theme-card__arrow" aria-hidden="true">→</span>
+</a>
+
+<style>
+  .theme-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    text-decoration: none;
+    color: var(--color-ink);
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.6rem 1.5rem;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .theme-card:hover { border-color: var(--card-accent); transform: translateX(2px); }
+  .theme-card__thumb {
+    width: 7rem;
+    height: 7rem;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin: -1.6rem 0 -1.6rem -1.5rem;
+  }
+  @media (max-width: 560px) {
+    .theme-card__thumb { display: none; }
+  }
+  .theme-card__num {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 1.6rem;
+    color: var(--card-accent);
+    line-height: 1;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .theme-card__body { flex: 1; min-width: 0; }
+  .theme-card__title { margin: 0 0 0.35rem; font-size: 1.1rem; }
+  .theme-card__desc { color: var(--color-ink-soft); font-size: 0.9rem; margin: 0 0 0.9rem; }
+  .theme-card__meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .theme-card__badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--color-bg-sunken);
+    color: var(--color-ink-soft);
+    padding: 0.25em 0.65em;
+    border-radius: 999px;
+  }
+  .theme-card__progress { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 120px; }
+  .theme-card__progress-track {
+    height: 3px;
+    flex: 1;
+    max-width: 100px;
+    background: var(--color-bg-sunken);
+    overflow: hidden;
+  }
+  .theme-card__progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--card-accent);
+    transition: width 0.3s ease;
+  }
+  .theme-card__progress-label { font-size: 0.74rem; color: var(--color-ink-faint); white-space: nowrap; }
+  .theme-card__arrow {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--color-ink-faint);
+    flex-shrink: 0;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .theme-card:hover .theme-card__arrow { color: var(--card-accent); transform: translateX(3px); }
+</style>

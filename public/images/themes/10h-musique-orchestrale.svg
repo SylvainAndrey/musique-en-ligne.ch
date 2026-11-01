@@ -1,0 +1,24 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#22303f"/>
+  <g fill="none" stroke="#f3f0e8" stroke-width="2.5">
+    <path d="M20,340 A140,140 0 0,1 280,340"/>
+    <path d="M45,340 A115,115 0 0,1 255,340"/>
+    <path d="M70,340 A90,90 0 0,1 230,340"/>
+    <path d="M95,340 A65,65 0 0,1 205,340"/>
+  </g>
+  <!-- conductor podium -->
+  <rect x="140" y="326" width="20" height="14" fill="#f3f0e8"/>
+  <!-- baton -->
+  <line x1="150" y1="326" x2="182" y2="256" stroke="#f3f0e8" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="184" cy="250" r="4" fill="#c98a52"/>
+  <!-- section markers -->
+  <g fill="#f3f0e8">
+    <circle cx="150" cy="300" r="5"/>
+    <circle cx="110" cy="290" r="5"/>
+    <circle cx="190" cy="290" r="5"/>
+    <circle cx="75" cy="270" r="5"/>
+    <circle cx="225" cy="270" r="5"/>
+    <circle cx="60" cy="230" r="5"/>
+    <circle cx="240" cy="230" r="5"/>
+  </g>
+</svg>

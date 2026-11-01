@@ -1,0 +1,21 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#2b4433"/>
+  <g fill="none" stroke="#f3f0e8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- head -->
+    <circle cx="150" cy="140" r="42"/>
+    <!-- open mouth -->
+    <ellipse cx="150" cy="158" rx="10" ry="14" fill="#2b4433"/>
+    <!-- shoulders / torso -->
+    <path d="M78,340 C78,260 108,206 150,206 C192,206 222,260 222,340" />
+    <!-- collar -->
+    <path d="M126,214 L150,236 L174,214" />
+  </g>
+  <!-- sound waves -->
+  <g fill="none" stroke="#c98a52" stroke-width="2.5" stroke-linecap="round">
+    <path d="M204,150 C216,158 216,172 204,180"/>
+    <path d="M216,138 C238,154 238,176 216,192"/>
+  </g>
+  <g fill="none" stroke="#f3f0e8" stroke-width="2" stroke-linecap="round" opacity="0.7">
+    <path d="M96,150 C84,158 84,172 96,180"/>
+  </g>
+</svg>

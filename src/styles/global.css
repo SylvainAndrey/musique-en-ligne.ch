@@ -1,0 +1,266 @@
+/* Version variable (axes wght + opsz) plutôt que les coupes statiques par
+   poids : le Fraunces statique dessine un J majuscule avec une petite boucle
+   à la base, peu élégante dans les titres. L'axe opsz forcé au maximum
+   (voir plus bas) donne un J simple et droit, testé et confirmé à tous les
+   poids utilisés sur le site (300 et 500). Note : le fichier "full" (qui
+   ajoute aussi les axes SOFT/WONK) a été essayé mais s'est avéré ne PAS
+   éliminer cette boucle, quels que soient les réglages — on reste donc sur
+   la variante "opsz" (wght + opsz uniquement), qui fonctionne de manière
+   fiable. */
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/fraunces/opsz-italic.css';
+/* j-override.css DOIT être importé APRÈS les fichiers Fraunces ci-dessus :
+   quand deux @font-face déclarent le même nom de famille avec des
+   unicode-range qui se recoupent, Chromium donne la priorité au DERNIER
+   déclaré (testé empiriquement) — le mettre avant serait silencieusement
+   ignoré. */
+@import './j-override.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
+/*
+  Direction éditoriale : base quasi monochrome (encre / os), typographie
+  comme matière principale (Fraunces light en grand pour les titres,
+  numérotation à deux chiffres comme repère structurel — les thèmes et
+  exercices sont réellement une séquence numérotée dans le programme),
+  un seul accent chaleureux réservé aux éléments interactifs.
+*/
+:root {
+  --font-display: 'Fraunces Variable', 'Fraunces', 'Iowan Old Style', 'Georgia', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --color-bg: #f6f4ef;
+  --color-bg-raised: #ffffff;
+  --color-bg-sunken: #ece8de;
+  --color-ink: #15161a;
+  --color-ink-soft: #5c5d64;
+  --color-ink-faint: #8b8c92;
+  --color-border: #dcd8cd;
+  --color-border-strong: #15161a;
+
+  --color-primary: #15161a;
+  --color-primary-soft: #34353c;
+  --color-accent: #a15a2e;
+  --color-accent-soft: #ecd9c4;
+  --color-9h: #3c5c46;
+  --color-10h: #33465e;
+  --color-11h: #5c3347;
+
+  --color-success: #2e6b47;
+  --color-success-bg: #e4f0e6;
+  --color-error: #a3392f;
+  --color-error-bg: #f8e6e3;
+
+  --radius-sm: 8px;
+  --radius-md: 4px;
+  --radius-lg: 2px;
+  --shadow-card: 0 1px 2px rgba(21, 22, 26, 0.04);
+  --shadow-pop: 0 10px 30px rgba(21, 22, 26, 0.12);
+  --max-width: 1240px;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #111114;
+  --color-bg-raised: #1a1a1f;
+  --color-bg-sunken: #08080a;
+  --color-ink: #f1efe9;
+  --color-ink-soft: #a8a7ac;
+  --color-ink-faint: #75757b;
+  --color-border: #2c2c33;
+  --color-border-strong: #f1efe9;
+
+  --color-primary: #f1efe9;
+  --color-primary-soft: #c9c8c2;
+  --color-accent: #d99a5f;
+  --color-accent-soft: #3a2a1a;
+
+  --color-success: #7fca9a;
+  --color-success-bg: #16281c;
+  --color-error: #e6968d;
+  --color-error-bg: #331917;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --color-bg: #111114;
+    --color-bg-raised: #1a1a1f;
+    --color-bg-sunken: #08080a;
+    --color-ink: #f1efe9;
+    --color-ink-soft: #a8a7ac;
+    --color-ink-faint: #75757b;
+    --color-border: #2c2c33;
+    --color-border-strong: #f1efe9;
+
+    --color-primary: #f1efe9;
+    --color-primary-soft: #c9c8c2;
+    --color-accent: #d99a5f;
+    --color-accent-soft: #3a2a1a;
+
+    --color-success: #7fca9a;
+    --color-success-bg: #16281c;
+    --color-error: #e6968d;
+    --color-error-bg: #331917;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-bg);
+  line-height: 1.65;
+  font-size: 1rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* font-optical-sizing:auto (valeur par défaut) ne pousse pas l'axe opsz
+     assez haut pour ce fichier variable auto-hébergé : on le fixe donc
+     explicitement à sa valeur "display" maximale, ce qui donne un J
+     majuscule simple et droit plutôt qu'avec une petite boucle à la base —
+     testé et confirmé aux poids 300 et 500 (tous les titres du site). */
+  font-variation-settings: 'opsz' 144;
+  line-height: 1.08;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(2.4rem, 6vw, 4.6rem); font-weight: 300; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
+h3 { font-size: clamp(1.15rem, 1.6vw, 1.4rem); font-weight: 500; }
+
+p { margin: 0 0 1em; text-align: justify; }
+p:last-child { margin-bottom: 0; }
+
+a {
+  color: inherit;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.75rem;
+}
+
+/* Étiquette éditoriale en petites capitales espacées — utilisée pour le fil d'Ariane et les repères de section. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  color: var(--color-ink-soft);
+}
+.eyebrow a { text-decoration: none; }
+.eyebrow a:hover { color: var(--color-ink); }
+
+/* Repère numéroté à deux chiffres (01, 02…) — reflète la numérotation réelle des thèmes/exercices du programme. */
+.index-number {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-faint);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  padding: 0.75em 1.5em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  box-shadow: var(--shadow-card);
+}
+.btn-primary:hover { background: var(--color-primary-soft); }
+
+.btn-accent {
+  background: var(--color-accent);
+  color: #fff8f0;
+}
+.btn-accent:hover { filter: brightness(1.08); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: var(--color-border-strong);
+}
+.btn-ghost:hover { background: var(--color-bg-sunken); }
+
+.card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+/* Filet fin éditorial pour séparer des sections sans le bruit d'une ombre portée. */
+.hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Sur petit écran, un texte justifié avec peu de mots par ligne crée des espacements
+   irréguliers (rivières) qui nuisent à la lecture — on repasse en alignement à gauche. */
+@media (max-width: 640px) {
+  p { text-align: left; }
+  .container { padding: 0 1.1rem; }
+}

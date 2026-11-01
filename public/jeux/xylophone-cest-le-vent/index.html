@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Jeu de Xylophone — C'est le vent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F4EF;
+    --card:#FFFFFF;
+    --ink:#15161A;
+    --muted:#6b6a63;
+    --border:rgba(21,22,26,0.12);
+    --green:#2b4433;
+    --plum:#3d2233;
+    --terracotta:#c98a52;
+    --terracotta-soft:#e7c69b;
+    --cream-line:#f3f0e8;
+    --miss:#a5493c;
+    --ok:#b0894a;
+    --shadow: 0 10px 30px rgba(21,22,26,0.08);
+  }
+  :root[data-theme="dark"]{
+    --bg:#1b1c20;
+    --card:#232428;
+    --ink:#F6F4EF;
+    --muted:#a6a49c;
+    --border:rgba(246,244,239,0.14);
+    --green:#3d6a4f;
+    --plum:#6b3c56;
+    --terracotta:#d9a06a;
+    --terracotta-soft:#4a3a2a;
+    --cream-line:#f3f0e8;
+    --miss:#d97a6a;
+    --ok:#c9a35f;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1b1c20; --card:#232428; --ink:#F6F4EF; --muted:#a6a49c;
+      --border:rgba(246,244,239,0.14); --green:#3d6a4f; --plum:#6b3c56;
+      --terracotta:#d9a06a; --terracotta-soft:#4a3a2a; --miss:#d97a6a; --ok:#c9a35f;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{
+    margin:0; padding:0; height:100%; overflow:hidden;
+    background:var(--bg);
+    color:var(--ink);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+    transition: background .25s ease, color .25s ease;
+  }
+  h1,h2,.serif{ font-family:"Fraunces", "Iowan Old Style", Georgia, serif; font-variation-settings:'opsz' 144; }
+  /* Remplace uniquement le J majuscule de Fraunces (boucle fantaisiste) par
+     celui d'une police système dont la hampe reste verticale jusqu'en bas. */
+  @font-face{ font-family:"Fraunces"; font-weight:100 900; font-style:normal; src:local("Georgia"), local("Iowan Old Style"), local("Times New Roman"); unicode-range:U+004A; }
+  #app{
+    position:fixed; inset:0;
+    display:flex; flex-direction:column;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ---------- HUD ---------- */
+  #hud{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; padding:10px 16px;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+    z-index:5;
+  }
+  #hud h1{
+    font-size:clamp(14px,2.4vw,19px);
+    margin:0; font-weight:500; letter-spacing:.2px;
+    white-space:nowrap;
+  }
+  .stats{ display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+  .stat{ text-align:center; min-width:52px; }
+  .stat .v{ font-size:clamp(15px,3vw,20px); font-weight:800; line-height:1; font-family:"Fraunces",serif; }
+  .stat .l{ font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.8px; margin-top:2px; }
+  #combo.pop{ animation: pop .25s ease; }
+  @keyframes pop{ 0%{transform:scale(1.5); color:var(--terracotta);} 100%{transform:scale(1);} }
+
+  .pill{
+    padding:8px 16px; border-radius:999px; border:1px solid var(--border);
+    background:transparent; color:var(--ink); font-size:12px; font-weight:700;
+    letter-spacing:.4px; cursor:pointer; font-family:"Inter",sans-serif;
+  }
+  .pill.solid{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+
+  /* ---------- Controls panel (pre-game) ---------- */
+  #panel{
+    position:absolute; inset:0; z-index:20;
+    /* align-items:flex-start (pas center) + marge auto sur .card, et non
+       l'inverse : avec align-items:center + overflow:auto, un flex-item plus
+       haut que le panneau se fait couper par le HAUT sans moyen de scroller
+       jusque-là (bug connu de l'alignement flex avec débordement) — c'était
+       la cause de la photo du clavier "incomplète" en haut sur petit écran. */
+    display:flex; align-items:flex-start; justify-content:center;
+    background:rgba(21,22,26,0.42);
+    backdrop-filter: blur(3px);
+    padding:16px;
+    overflow:auto;
+  }
+  #panel.hidden{ display:none; }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:10px 16px;
+    max-width:300px; width:100%;
+    margin:auto 0;
+    box-shadow: var(--shadow);
+  }
+  .card.wide{ max-width:760px; }
+  .card h2{ margin:0 0 1px; font-size:17px; font-weight:500; }
+  .card p.sub{ margin:0 0 6px; color:var(--muted); font-size:11px; line-height:1.3; }
+  .row{ margin-bottom:5px; }
+  .row label.title{ display:block; font-size:9.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.7px; margin-bottom:4px; font-weight:700; }
+  .seg{ display:flex; gap:8px; }
+  .seg button{
+    flex:1; padding:11px 8px; border-radius:12px; border:1px solid var(--border);
+    background:transparent; color:var(--ink); font-size:13px; font-weight:700;
+    cursor:pointer; font-family:"Inter",sans-serif;
+  }
+  .seg button.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  .chk{ display:flex; align-items:center; gap:7px; padding:5px 8px; border-radius:9px; background:transparent; border:1px solid var(--border); margin-bottom:3px; cursor:pointer; }
+  .chk input{ width:15px; height:15px; accent-color: var(--terracotta); flex-shrink:0; }
+  .chk .swatch{ width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+  .chk span.lbl{ font-size:11.5px; }
+  .chk.sub{ opacity:0.9; margin-left:4px; }
+  .metro-chk svg{ color:var(--terracotta); flex-shrink:0; width:17px; height:17px; }
+  #demoNote{ font-size:12.5px; color:var(--muted); background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:10px 12px; }
+  input[type=range]{ width:100%; accent-color: var(--terracotta); }
+  .speedval{ float:right; color:var(--terracotta); font-weight:800; }
+  #startBtn{
+    width:100%; margin-top:1px; padding:8px; border:none; border-radius:999px;
+    background:var(--ink); color:var(--bg); font-weight:700; font-size:13px;
+    cursor:pointer; letter-spacing:.3px;
+    font-family:"Inter",sans-serif;
+  }
+  #startBtn:active{ transform: translateY(1px); }
+
+  .instr-thumb{
+    /* pas de max-height : la photo garde son ratio naturel et reste toujours
+       entièrement visible, quelle que soit la largeur de la carte (la largeur
+       de la carte elle-même est réduite pour que l'ensemble tienne dans
+       l'iframe — voir .card{max-width}). */
+    display:block; width:100%; height:auto; border-radius:12px;
+    margin-bottom:6px; border:1px solid var(--border); background:#c7c5be;
+  }
+
+  /* ---------- Countdown ---------- */
+  #countdown{
+    position:absolute; inset:0; z-index:15; display:none;
+    align-items:center; justify-content:center;
+    font-size:min(28vw,170px); font-weight:600; color:var(--terracotta);
+    font-family:"Fraunces",serif;
+  }
+
+  /* ---------- Game area ---------- */
+  #stage{ position:relative; flex:1; min-height:0; }
+  #cv{ position:absolute; inset:0; width:100%; height:100%; display:block; z-index:2; }
+  #instrLayer{ position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+  .instrBox{
+    position:absolute;
+    /* PAS de transform 3D ici (un rotateX perspective y était avant, pour
+       donner un effet "vu de côté" à la photo du clavier) : les colonnes de
+       jeu (canvas) sont dessinées à plat, en 2D. Une boîte à plat (lames du
+       SVG droites, colonnes droites) garantit un alignement exact ; une
+       boîte inclinée en 3D, elle, ne coïncide avec des colonnes à plat qu'à
+       UNE seule hauteur (près de transform-origin) et diverge ailleurs —
+       c'était la cause du désalignement qui persistait malgré un clavier
+       généré parfaitement droit.
+    */
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow: 0 10px 18px rgba(0,0,0,0.28);
+  }
+  .instrBox img{ display:block; width:100%; height:100%; }
+  #imgKeyboard{ background:#c7c5be; }
+  #imgDjembeBox{ background:#fff; }
+  #imgDjembeBox img{ object-fit:contain; }
+
+  /* ---------- End summary ---------- */
+  #summary{
+    position:absolute; inset:0; z-index:25; display:none;
+    align-items:center; justify-content:center; background:rgba(21,22,26,0.42);
+    padding:16px; overflow:auto;
+  }
+  .grade{ font-size:14px; font-weight:700; color:var(--terracotta); margin-bottom:2px; text-transform:uppercase; letter-spacing:.6px;}
+  .bigscore{ font-size:46px; font-weight:600; margin:4px 0 2px; font-family:"Fraunces",serif; }
+  .acc{ color:var(--muted); font-size:13px; margin-bottom:18px; }
+  .breakdown{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; }
+  .bd{ background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:10px 10px; }
+  .bd .n{ font-size:21px; font-weight:800; font-family:"Fraunces",serif; }
+  .bd .t{ font-size:11px; color:var(--muted); }
+  .bd.perfect .n{ color:var(--terracotta); }
+  .bd.good .n{ color:var(--green); }
+  .bd.ok .n{ color:var(--ok); }
+  .bd.miss .n{ color:var(--miss); }
+  .btnrow{ display:flex; gap:10px; }
+  .btnrow button{ flex:1; padding:13px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--ink); font-weight:700; cursor:pointer; font-family:"Inter",sans-serif; }
+  .btnrow button.primary{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+
+  #reviewSection{ text-align:left; }
+  #reviewSection h3{ font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin:0 0 10px; }
+  #scoreReviewOuter{
+    border-radius:12px; overflow:auto; border:1px solid var(--border);
+    max-height:46vh; background:#fff; margin-bottom:12px;
+  }
+  /* position:relative isolé ici, SANS limite de hauteur : les pourcentages des
+     .mark doivent se caler sur la taille réelle de l'image, pas sur la
+     fenêtre de défilement (sinon toutes les erreurs se tassent en haut). */
+  #scoreReviewWrap{ position:relative; }
+  #scoreReviewWrap img{ display:block; width:100%; height:auto; }
+  /* Cadre autour de la/les mesure(s) qui a/ont eu le plus d'erreurs. En % de
+     la largeur/hauteur affichées (pas en px fixe) pour rester à la bonne
+     échelle quelle que soit la taille du panneau de résultat. */
+  .errorRing{
+    position:absolute; border:3px solid var(--miss); border-radius:10px;
+    box-shadow:0 1px 6px rgba(0,0,0,0.25); pointer-events:none;
+  }
+  .legend{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+  .legend i{ width:16px; height:16px; display:inline-block; }
+
+  #hint{ position:absolute; bottom:6px; left:0; right:0; text-align:center; font-size:11px; color:var(--muted); z-index:4; pointer-events:none; }
+  #loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; z-index:30; background:var(--bg); }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="hud">
+    <h1 class="serif">C'est le vent</h1>
+    <div class="stats">
+      <div class="stat"><div class="v" id="scoreVal">0</div><div class="l">Score</div></div>
+      <div class="stat"><div class="v" id="combo">0</div><div class="l">Série</div></div>
+      <div class="stat"><div class="v" id="progressVal">0%</div><div class="l">Avancement</div></div>
+      <button id="themeBtn" class="pill">SOMBRE</button>
+      <button id="stopBtn" class="pill" style="display:none;">⏹ Arrêter</button>
+    </div>
+  </div>
+
+  <div id="stage">
+    <div id="instrLayer">
+      <div id="imgKeyboard" class="instrBox"></div>
+      <div id="imgDjembeBox" class="instrBox"><img src="assets/djembe.png" alt=""></div>
+    </div>
+    <canvas id="cv"></canvas>
+    <div id="hint">Touche la lame au bon moment !</div>
+    <div id="countdown">3</div>
+    <div id="loading">Chargement des lames…</div>
+  </div>
+
+  <!-- Pre-game panel -->
+  <div id="panel" class="hidden">
+    <div class="card">
+      <img class="instr-thumb" src="assets/home_instrument.png" alt="Xylophone">
+      <h2 class="serif">Joue !</h2>
+      <p class="sub">Touche la bonne lame de xylophone au moment où la note l'atteint.</p>
+
+      <div class="row" id="playRow">
+        <label class="title">Sélectionne ta voix</label>
+        <label class="chk"><input type="radio" name="playVoice" value="1" checked><span class="swatch" style="background:var(--terracotta)"></span><span class="lbl">Voix 1 — Mélodie</span></label>
+        <label class="chk"><input type="radio" name="playVoice" value="2"><span class="swatch" style="background:var(--green)"></span><span class="lbl">Voix 2 — Basse</span></label>
+        <label class="chk"><input type="radio" name="playVoice" value="3"><span class="swatch" style="background:var(--plum)"></span><span class="lbl">Rythme — Djembé</span></label>
+      </div>
+
+      <div class="row" id="hearRow">
+        <label class="title">Choisis ton accompagnement</label>
+        <label class="chk sub" data-voice="1"><input type="checkbox" checked><span class="swatch" style="background:var(--terracotta)"></span><span class="lbl">Voix 1 — Mélodie</span></label>
+        <label class="chk sub" data-voice="2"><input type="checkbox" checked><span class="swatch" style="background:var(--green)"></span><span class="lbl">Voix 2 — Basse</span></label>
+        <label class="chk sub" data-voice="3"><input type="checkbox" checked><span class="swatch" style="background:var(--plum)"></span><span class="lbl">Rythme — Djembé</span></label>
+      </div>
+
+      <div class="row">
+        <label class="title">Tempo <span class="speedval" id="speedLbl">72 BPM</span></label>
+        <input type="range" id="speedRange" min="60" max="120" step="1" value="72">
+      </div>
+
+      <label class="chk metro-chk" style="margin-bottom:0;">
+        <input type="checkbox" id="metroChk">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M8 21h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M7 21 10 5h4l3 16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M11.3 6 8.5 17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="8.5" cy="17.5" r="1.2" fill="currentColor"/>
+          <path d="M9.5 3.2h3l-.4 2.3h-2.2z" fill="currentColor"/>
+        </svg>
+        <span class="lbl">Métronome</span>
+      </label>
+
+      <button id="startBtn">Commencer le jeu</button>
+    </div>
+  </div>
+
+  <!-- End summary -->
+  <div id="summary">
+    <div class="card" id="summaryCard" style="text-align:center;">
+      <div class="grade" id="gradeText">BRAVO</div>
+      <div class="bigscore" id="finalScore">0</div>
+      <div class="acc" id="finalAcc">Précision : 0%</div>
+      <div class="breakdown">
+        <div class="bd perfect"><div class="n" id="cntParfait">0</div><div class="t">Parfait</div></div>
+        <div class="bd good"><div class="n" id="cntBien">0</div><div class="t">Bien</div></div>
+        <div class="bd ok"><div class="n" id="cntPassable">0</div><div class="t">Passable</div></div>
+        <div class="bd miss"><div class="n" id="cntRate">0</div><div class="t">Raté</div></div>
+      </div>
+
+      <div id="reviewSection" style="display:none;">
+        <h3>La mesure à retravailler — partition annotée</h3>
+        <div id="scoreReviewOuter">
+          <div id="scoreReviewWrap">
+            <img src="assets/score.png" alt="Partition">
+          </div>
+        </div>
+        <div class="legend">
+          <span><i style="background:none;border:2px solid var(--miss);border-radius:4px;"></i>Mesure avec le plus d'erreurs</span>
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button id="retryBtn" class="primary">🔁 Rejouer</button>
+        <button id="menuBtn">← Retour</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ===============================================================
+   JEU DE XYLOPHONE — fichier unique et autonome (HTML+CSS+JS),
+   plus un dossier assets/ à côté. Aucune dépendance, aucun build.
+
+   ── ADAPTER À UN NOUVEAU MORCEAU (nouveau MIDI + nouvelle partition) ──
+   Tout ce qui est spécifique à "C'est le vent" est regroupé dans la
+   section 1 et 1b ci-dessous. Pour changer de morceau :
+     1. Exporter le MIDI avec 3 pistes (mélodie, basse, rythme).
+        Utiliser tools/parse_midi.js pour extraire les notes :
+          node tools/parse_midi.js "mon_fichier.mid" sortie.json
+        Copier les tableaux {note,start,duration} obtenus dans
+        VOIX1 / VOIX2 / RYTHME ci-dessous (voir tools/README.md pour
+        le détail : conversion ticks → secondes, tempo de base, etc.)
+     2. Mettre à jour SONG_END (durée totale en secondes, au tempo
+        de base utilisé pour l'export, typiquement 100 BPM).
+     3. Exporter la partition en PDF puis la convertir en PNG
+        (voir tools/README.md pour la commande pdftoppm), la
+        déposer dans assets/score.png, puis mesurer à la règle les
+        bornes de mesures (SCORE_MEASURES) et la hauteur de chaque
+        portée (STAFF_Y) — tools/README.md détaille la méthode de
+        mesure par balayage de pixels.
+     4. Si les paroles/notes en solfège changent, adapter noteLabel()
+        et la table SOLFEGE si besoin (do/ré/mi... déjà couvert).
+
+   ── ADAPTER À UN NOUVEAU XYLOPHONE ──
+   Le clavier affiché est une image GÉNÉRÉE (assets/xylo_keyboard.svg), pas
+   une photo : après plusieurs essais infructueux pour aligner des colonnes
+   droites sur une vraie photo prise avec un angle (chaque lame y est un
+   parallélogramme légèrement incliné, jamais parfaitement alignable), le
+   clavier a été remplacé par un SVG à 11 lames bien droites et régulièrement
+   espacées (inspiré des couleurs/étiquettes d'une vraie photo de xylophone).
+   BAR_COL_BOUNDS est donc un simple découpage en 11 parts égales — plus
+   besoin de mesurer quoi que ce soit. Pour changer l'allure du clavier,
+   éditer directement assets/xylo_keyboard.svg (11 groupes <g>, un par lame) ;
+   si le nombre de lames change, adapter aussi AIGU_PITCHES et BAR_COL_BOUNDS.
+
+   ── INTÉGRER CE JEU SUR www.musique-en-ligne.ch ──
+   Le jeu est 100% autonome (chemins relatifs uniquement) : il suffit
+   de copier CE fichier + le dossier assets/ tels quels dans le
+   dossier public/ du site (ex. public/jeux/xylophone/), puis d'y
+   accéder directement ou via une <iframe src="/jeux/xylophone/...">
+   depuis une page Astro. Aucune modification de code n'est requise
+   pour l'intégration ; le jeu occupe 100% de la fenêtre qui le
+   contient (idéal en iframe plein cadre).
+   =============================================================== */
+(function(){
+  "use strict";
+
+  /* =========================================================
+     1. DONNÉES MIDI (extraites de "C'est le vent - 9F MAO - toutes
+        les voix.mid" — tempo de base 100 BPM. La 3e voix vient de la
+        piste de percussion "Multi-toms" du fichier.)
+     ========================================================= */
+  const VOIX1 = [{"note":81,"start":0,"duration":0.6},{"note":81,"start":0.6,"duration":0.3},{"note":81,"start":0.9,"duration":0.3},{"note":77,"start":1.2,"duration":0.6},{"note":77,"start":1.8,"duration":0.3},{"note":77,"start":2.1,"duration":0.3},{"note":82,"start":2.4,"duration":0.6},{"note":79,"start":3,"duration":0.6},{"note":81,"start":3.6,"duration":1.2},{"note":81,"start":4.8,"duration":0.6},{"note":81,"start":5.4,"duration":0.3},{"note":81,"start":5.7,"duration":0.3},{"note":77,"start":6,"duration":0.6},{"note":77,"start":6.6,"duration":0.3},{"note":77,"start":6.9,"duration":0.3},{"note":72,"start":7.2,"duration":0.6},{"note":72,"start":7.8,"duration":0.6},{"note":72,"start":8.4,"duration":1.2},{"note":77,"start":9.6,"duration":0.3},{"note":77,"start":9.9,"duration":0.3},{"note":77,"start":10.2,"duration":0.3},{"note":77,"start":10.5,"duration":0.3},{"note":74,"start":10.8,"duration":1.2},{"note":72,"start":12,"duration":0.3},{"note":72,"start":12.3,"duration":0.3},{"note":72,"start":12.6,"duration":0.3},{"note":72,"start":12.9,"duration":0.3},{"note":72,"start":13.2,"duration":1.2},{"note":81,"start":14.4,"duration":0.6},{"note":81,"start":15,"duration":0.3},{"note":81,"start":15.3,"duration":0.3},{"note":77,"start":15.6,"duration":0.6},{"note":77,"start":16.2,"duration":0.3},{"note":77,"start":16.5,"duration":0.3},{"note":82,"start":16.8,"duration":0.6},{"note":79,"start":17.4,"duration":0.6},{"note":81,"start":18,"duration":1.2},{"note":81,"start":19.2,"duration":0.6},{"note":81,"start":19.8,"duration":0.3},{"note":81,"start":20.1,"duration":0.3},{"note":77,"start":20.4,"duration":0.6},{"note":77,"start":21,"duration":0.3},{"note":77,"start":21.3,"duration":0.3},{"note":77,"start":21.6,"duration":0.6},{"note":76,"start":22.2,"duration":0.6},{"note":74,"start":22.8,"duration":1.2}];
+  const VOIX2 = [{"note":50,"start":0,"duration":0.6},{"note":50,"start":1.2,"duration":0.6},{"note":55,"start":2.4,"duration":0.6},{"note":58,"start":3,"duration":0.6},{"note":57,"start":3.6,"duration":0.3},{"note":57,"start":3.9,"duration":0.3},{"note":57,"start":4.2,"duration":0.6},{"note":50,"start":4.8,"duration":0.6},{"note":50,"start":6,"duration":0.6},{"note":52,"start":7.2,"duration":0.6},{"note":52,"start":7.8,"duration":0.6},{"note":53,"start":8.4,"duration":0.3},{"note":53,"start":8.7,"duration":0.3},{"note":53,"start":9,"duration":0.6},{"note":50,"start":9.6,"duration":0.6},{"note":58,"start":10.8,"duration":0.6},{"note":55,"start":12,"duration":0.6},{"note":55,"start":12.6,"duration":0.6},{"note":53,"start":13.2,"duration":0.3},{"note":53,"start":13.5,"duration":0.3},{"note":53,"start":13.8,"duration":0.6},{"note":50,"start":14.4,"duration":0.6},{"note":50,"start":15.6,"duration":0.6},{"note":55,"start":16.8,"duration":0.6},{"note":58,"start":17.4,"duration":0.6},{"note":57,"start":18,"duration":0.3},{"note":57,"start":18.3,"duration":0.3},{"note":57,"start":18.6,"duration":0.6},{"note":50,"start":19.2,"duration":0.6},{"note":50,"start":20.4,"duration":0.6},{"note":57,"start":21.6,"duration":0.6},{"note":57,"start":22.2,"duration":0.6},{"note":50,"start":22.8,"duration":1.2}];
+  const SONG_END = 24; // secondes (durée réelle du morceau, tempo 100 BPM)
+
+  // 3e voix = la vraie piste de percussion "Multi-toms" du fichier MIDI
+  const RYTHME = [{"start":0,"duration":0.6},{"start":1.2,"duration":0.6},{"start":2.4,"duration":0.6},{"start":3,"duration":0.6},{"start":3.6,"duration":0.3},{"start":3.9,"duration":0.3},{"start":4.2,"duration":0.6},{"start":4.8,"duration":0.6},{"start":6,"duration":0.6},{"start":7.2,"duration":0.6},{"start":7.8,"duration":0.6},{"start":8.4,"duration":0.15},{"start":8.55,"duration":0.15},{"start":8.7,"duration":0.15},{"start":8.85,"duration":0.15},{"start":9,"duration":0.6},{"start":9.6,"duration":0.6},{"start":10.8,"duration":0.6},{"start":12,"duration":0.6},{"start":12.6,"duration":0.6},{"start":13.2,"duration":0.3},{"start":13.5,"duration":0.3},{"start":13.8,"duration":0.6},{"start":14.4,"duration":0.6},{"start":15.6,"duration":0.6},{"start":16.8,"duration":0.6},{"start":17.4,"duration":0.6},{"start":18,"duration":0.15},{"start":18.15,"duration":0.15},{"start":18.3,"duration":0.15},{"start":18.45,"duration":0.15},{"start":18.6,"duration":0.6},{"start":19.2,"duration":0.6},{"start":20.4,"duration":0.6},{"start":21.6,"duration":0.6},{"start":22.2,"duration":0.6},{"start":22.8,"duration":0.6}]
+    .map(n => ({ ...n, accent: n.duration <= 0.2 }));
+
+  const SOLFEGE = ['Do','Réb','Ré','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+
+  function pc(midi){ return ((midi % 12) + 12) % 12; }
+  function noteLabel(midi){ return SOLFEGE[pc(midi)]; }
+  function freqOf(midi){ return 440 * Math.pow(2, (midi-69)/12); }
+  // La voix 2 (basse) sonne une octave plus haut qu'écrit : le vrai
+  // xylophone grave n'existe pas, on rend juste le son moins sourd.
+  function audioPitch(voice, midi){ return voice===2 ? midi+12 : midi; }
+
+  /* =========================================================
+     1b. CALIBRAGE DE LA PARTITION (assets/score.png, 1819x2573)
+        pour pouvoir colorier les notes jouées à l'écran de fin.
+     ========================================================= */
+  const SCORE_IMG_W = 1819, SCORE_IMG_H = 2573;
+  // x1 des mesures 0, 4 et 6 (= la 1ère mesure de chaque système) corrigé :
+  // la clé + l'armure (+ le chiffrage 4/4 pour la toute 1ère) occupent de la
+  // place avant la 1ère note réelle. Mesurer x1 sur la barre de mesure (comme
+  // pour les autres mesures) plaçait donc la 1ère note ~100-120px trop tôt.
+  // Valeurs ci-dessous = x réel de la 1ère note, relevé directement sur
+  // score.png (mesure0 a en plus le 4/4 → décalage un peu plus grand).
+  const SCORE_MEASURES = [
+    {x1:345,x2:625,sys:1},{x1:625,x2:1003,sys:1},{x1:1003,x2:1339,sys:1},{x1:1339,x2:1730,sys:1},
+    {x1:690,x2:1193,sys:2},{x1:1193,x2:1730,sys:2},
+    {x1:330,x2:671,sys:3},{x1:671,x2:1067,sys:3},{x1:1067,x2:1440,sys:3},{x1:1440,x2:1720,sys:3},
+  ];
+  const STAFF_Y = { 1:{1:340,2:493,3:645}, 2:{1:927,2:1081,3:1232}, 3:{1:1630,2:1805,3:1989} };
+  // STAFF_Y = position d'une note de référence par voix (voir ANCHOR_MIDI),
+  // PAS la ligne du milieu — voir plus bas pourquoi. Vérifié en repérant les 5
+  // lignes réelles de chaque portée sur score.png (système 1 : voix 1 aux
+  // y=315/327/339/352/364, voix 2 aux y=468.5/481/493/505.5/518), écart d'une
+  // ligne à l'autre ≈12.25px (voix1) / 12.375px (voix2), soit ≈6.125 / 6.1875
+  // px par degré de gamme (ligne ou interligne) — ces deux écarts sont fiables
+  // (mesure directe des lignes). En revanche, situer la ligne du milieu sur
+  // l'échelle diatonique standard (Si4 en clé de sol) donnait des positions
+  // fausses d'environ un degré une fois vérifié note par note sur l'image
+  // (zoom pixel par pixel sur plusieurs notes de hauteurs différentes) —
+  // plutôt que de deviner pourquoi, chaque voix est calibrée sur une note de
+  // référence dont le vrai pixel a été mesuré directement :
+  //   - voix 1 : la note 81 (La) est à x≈345/y=340 dans la mesure 0 (système1)
+  //   - voix 2 : la note 50 (Ré, affichée +12 comme le son — cf audioPitch)
+  //     est à x≈330/y=518 dans la mesure 0 (système1)
+  // Toutes les autres notes de la voix sont ensuite positionnées par leur
+  // écart diatonique à cette référence (formule qui, elle, a été vérifiée
+  // fiable : Sol/Si♭/Do mesurés indépendamment tombent à ±2-7px du calcul).
+  const STAFF_STEP = { 1: 6.125, 2: 6.1875 };  // px par degré de gamme
+  const ANCHOR_MIDI = { 1: 81, 2: 50 };        // note de référence par voix (avant audioPitch)
+  const ANCHOR_Y_DELTA = { 1: 0, 2: 25 };      // y réel de la référence − STAFF_Y[1][voix]
+  const LETTER_BY_PC = [0,1,1,2,2,3,4,4,5,5,6,6];   // Do,Ré,Mi,Fa,Sol,La,Si (préférence bémol)
+  function diatonicIndex(midi){
+    const pc = ((midi % 12) + 12) % 12;
+    const octave = Math.floor(midi/12) - 1;
+    return LETTER_BY_PC[pc] + 7*octave;
+  }
+  function scorePixelPos(voice, startSeconds, midi){
+    const beat = startSeconds/0.6; // croche/noire à 100 BPM de base
+    const mIdx = Math.floor(beat/4);
+    const measure = SCORE_MEASURES[mIdx];
+    if(!measure) return null;
+    const beatInMeasure = beat - mIdx*4;
+    const x = measure.x1 + (beatInMeasure/4)*(measure.x2-measure.x1);
+    let y = STAFF_Y[measure.sys][voice];
+    if(voice!==3 && midi!=null && midi>=0){
+      const step = STAFF_STEP[voice];
+      const displayMidi = audioPitch(voice, midi);
+      const displayAnchor = audioPitch(voice, ANCHOR_MIDI[voice]);
+      y += ANCHOR_Y_DELTA[voice] - (diatonicIndex(displayMidi) - diatonicIndex(displayAnchor)) * step;
+    }
+    return { xPct: x/SCORE_IMG_W*100, yPct: y/SCORE_IMG_H*100 };
+  }
+
+  /* =========================================================
+     2. LAMES : un seul clavier do→fa' (11 lames, dessinées dans
+        assets/xylo_keyboard.svg), partagé par la voix 1 ET la voix 2 — la
+        voix 2 est plus grave à l'écriture mais joue sur les mêmes lames
+        (même lettre de note), + 1 djembé. Les 11 lames du SVG sont bien
+        droites et régulièrement espacées, donc BAR_COL_BOUNDS est un simple
+        découpage égal (voir plus bas) — pas de mesure à faire.
+     ========================================================= */
+  const AIGU_PITCHES = [72,74,76,77,79,81,82,84,86,88,89]; // do,ré,mi,fa,sol,la,sib,do',ré',mi',fa'
+  // Clavier GÉNÉRÉ (assets/xylo_keyboard.svg), pas une photo : après plusieurs
+  // essais de calibrage sur la vraie photo du xylophone (prise avec un angle,
+  // donc chaque lame est un parallélogramme légèrement incliné — jamais
+  // parfaitement alignable avec des colonnes droites, quelle que soit la
+  // méthode de mesure essayée : vis de fixation, haut de lame, etc.), on
+  // dessine à la place un clavier illustré à 11 lames bien droites et
+  // RÉGULIÈREMENT ESPACÉES, inspiré des couleurs/étiquettes de la vraie photo
+  // (bois ambré, lame "Sib" d'une teinte différente, points de fixation,
+  // étiquettes manuscrites). Comme les lames sont parfaitement rectangulaires
+  // et égales, l'alignement avec les colonnes est exact par construction —
+  // plus besoin de mesurer quoi que ce soit sur une photo.
+  const BAR_COL_BOUNDS = Array.from({length:12}, (_,i) => i/11);
+  function buildBars(){
+    const bars = AIGU_PITCHES.map((p,i)=>(
+      { pitch:p, label:noteLabel(p) + (i>=7?"'":''), colFrac:[BAR_COL_BOUNDS[i], BAR_COL_BOUNDS[i+1]] }
+    ));
+    bars.push({ pitch:-1, label:'Djembé', voice:3, isRhythm:true });
+    return bars;
+  }
+
+  /* =========================================================
+     3. AUDIO
+     ========================================================= */
+  // Créé tout de suite (pas au premier clic) pour pouvoir décoder les
+  // échantillons de djembé en avance : ça élimine le petit décalage entre
+  // le tap et le son qu'on avait avec un <audio> cloné à chaque frappe.
+  let actx = new (window.AudioContext||window.webkitAudioContext)();
+  // Volume général +15% : tout le son synthétisé/décodé passe par ce gain
+  // commun plutôt que directement vers la sortie.
+  const MASTER_VOL = 1.15;
+  const masterGain = actx.createGain();
+  masterGain.gain.value = MASTER_VOL;
+  masterGain.connect(actx.destination);
+  function ensureAudio(){
+    if(actx.state === 'suspended') actx.resume();
+  }
+  function playTone(midi, velocity){
+    if(!actx) return;
+    const t0 = actx.currentTime;
+    const freq = freqOf(midi);
+    const gainMain = actx.createGain();
+    gainMain.gain.value = 1;
+    gainMain.connect(masterGain);
+    const partials = [ {mult:1, amp:1}, {mult:3.93, amp:0.28}, {mult:9.2, amp:0.10} ];
+    const vol = (velocity===undefined?0.9:velocity);
+    partials.forEach(p=>{
+      const osc = actx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq * p.mult;
+      const g = actx.createGain();
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(p.amp*vol, t0+0.004);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.5 + (p.mult===1?0.5:0));
+      osc.connect(g); g.connect(gainMain);
+      osc.start(t0); osc.stop(t0 + 1.1);
+    });
+  }
+  // vrais sons de djembé (extraits de "Sample son djembé correct.mp3"),
+  // décodés en mémoire (Web Audio) pour un déclenchement instantané, sans
+  // le petit retard qu'ajoute la lecture d'un <audio> à chaque frappe.
+  const DJEMBE_SRC = ['assets/djembe_hit1.mp3', 'assets/djembe_hit2.mp3'];
+  let djembeBuffers = [];
+  const djembeTemplates = DJEMBE_SRC.map(src=>{ const a = new Audio(src); a.preload = 'auto'; return a; }); // repli si fetch/décodage impossible (ouverture en file://)
+  function preloadDjembeBuffers(){
+    return Promise.all(DJEMBE_SRC.map(src=>
+      fetch(src).then(r=>r.arrayBuffer()).then(buf=>actx.decodeAudioData(buf))
+    )).then(buffers=>{ djembeBuffers = buffers; }).catch(()=>{ djembeBuffers = []; });
+  }
+  function playDjembe(accent){
+    if(djembeBuffers.length){
+      const buf = djembeBuffers[Math.floor(Math.random()*djembeBuffers.length)];
+      const src = actx.createBufferSource();
+      src.buffer = buf;
+      const g = actx.createGain();
+      g.gain.value = accent ? 1.0 : 0.8;
+      src.connect(g); g.connect(masterGain);
+      src.start();
+      return;
+    }
+    const tpl = djembeTemplates[Math.floor(Math.random()*djembeTemplates.length)];
+    const a = tpl.cloneNode(true);
+    a.volume = Math.min(1, (accent ? 1.0 : 0.8) * MASTER_VOL);
+    a.play().catch(()=>{});
+  }
+  function playMetronome(accent){
+    if(!actx) return;
+    const t0 = actx.currentTime;
+    const osc = actx.createOscillator();
+    const g = actx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = accent ? 1500 : 1000;
+    g.gain.setValueAtTime(accent?0.36:0.26, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+0.055);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t0); osc.stop(t0+0.05);
+  }
+
+  /* =========================================================
+     4. IMAGES
+     ========================================================= */
+  function preloadImages(){
+    const sources = ['assets/xylo_keyboard.svg','assets/djembe.png','assets/home_instrument.png','assets/score.png'];
+    return Promise.all(sources.map(src=>new Promise(resolve=>{
+      const img = new Image();
+      img.onload = resolve; img.onerror = resolve;
+      img.src = src;
+    })));
+  }
+
+  /* =========================================================
+     5. ÉTAT / DOM
+     ========================================================= */
+  const els = {
+    panel: document.getElementById('panel'),
+    summary: document.getElementById('summary'),
+    summaryCard: document.getElementById('summaryCard'),
+    countdown: document.getElementById('countdown'),
+    loading: document.getElementById('loading'),
+    startBtn: document.getElementById('startBtn'),
+    stopBtn: document.getElementById('stopBtn'),
+    retryBtn: document.getElementById('retryBtn'),
+    menuBtn: document.getElementById('menuBtn'),
+    themeBtn: document.getElementById('themeBtn'),
+    playRow: document.getElementById('playRow'),
+    hearRow: document.getElementById('hearRow'),
+    speedRange: document.getElementById('speedRange'),
+    speedLbl: document.getElementById('speedLbl'),
+    metroChk: document.getElementById('metroChk'),
+    scoreVal: document.getElementById('scoreVal'),
+    combo: document.getElementById('combo'),
+    progressVal: document.getElementById('progressVal'),
+    cv: document.getElementById('cv'),
+    imgKeyboard: document.getElementById('imgKeyboard'),
+    imgDjembeBox: document.getElementById('imgDjembeBox'),
+    reviewSection: document.getElementById('reviewSection'),
+    scoreReviewWrap: document.getElementById('scoreReviewWrap'),
+  };
+
+  const mode = 'jeu'; // le mode Démo a été retiré : on joue toujours en mode noté
+
+  function getPlayVoice(){
+    const r = document.querySelector('input[name="playVoice"]:checked');
+    return r ? parseInt(r.value,10) : 1;
+  }
+  function updateHearRow(){
+    const pv = getPlayVoice();
+    els.hearRow.querySelectorAll('.chk').forEach(row=>{
+      const v = parseInt(row.dataset.voice,10);
+      row.style.display = (v===pv) ? 'none' : '';
+    });
+  }
+  document.querySelectorAll('input[name="playVoice"]').forEach(r=> r.addEventListener('change', ()=>{
+    updateHearRow();
+    if(!game) layoutInstrumentLayer();
+  }));
+  updateHearRow();
+
+  els.speedRange.oninput = ()=>{ els.speedLbl.textContent = els.speedRange.value + ' BPM'; };
+
+  els.themeBtn.onclick = ()=>{
+    const root = document.documentElement;
+    const cur = root.getAttribute('data-theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
+    const next = cur==='dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    els.themeBtn.textContent = next==='dark' ? 'CLAIR' : 'SOMBRE';
+  };
+  (function initThemeLabel(){
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const cur = document.documentElement.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+    els.themeBtn.textContent = cur==='dark' ? 'CLAIR' : 'SOMBRE';
+  })();
+
+  const ctx = els.cv.getContext('2d');
+  let W=0,H=0,DPR=1;
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1, 2);
+    const rect = els.cv.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    els.cv.width = Math.round(W*DPR);
+    els.cv.height = Math.round(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    layoutInstrumentLayer();
+  }
+  window.addEventListener('resize', resize);
+
+  // LEAD (temps de chute d'une note) et OFFSET (délai avant la 1ère note) sont
+  // exprimés en nombre de TEMPS (battements), pas en secondes fixes : recalculés
+  // à chaque partie (newGame(), ci-dessous) selon le tempo choisi. Avant, avec
+  // des secondes fixes, le nombre de clics de métronome entre la fin du
+  // décompte et la 1ère note changeait selon le tempo (5 au lieu de 4 à
+  // 72 BPM) — avec un OFFSET = un nombre entier de temps, la note arrive
+  // toujours exactement sur le Nème clic, quel que soit le tempo.
+  const LEAD_BEATS = 4;
+  const GAP_PX = 7;          // espace visuel entre deux notes consécutives
+  // Léger rétrécissement visuel des bandes/notes par rapport à la largeur
+  // "logique" de la colonne (zone de tap, qui elle reste pleine largeur pour
+  // rester facile à toucher) : purement esthétique maintenant que le clavier
+  // est généré avec des lames bien droites et régulières (voir
+  // assets/xylo_keyboard.svg) — juste assez pour qu'un espace net se voie
+  // entre deux colonnes voisines.
+  const LANE_INSET = 0.06;
+  // Fenêtres de jugement calibrées pour un temps de 0.6s (100 BPM) puis
+  // divisées par `speed` à l'usage (voir newGame()) : sinon, à un tempo plus
+  // rapide que 100 BPM, ces fenêtres fixes deviennent trop larges par rapport
+  // à l'écart réel entre deux notes (donc trop indulgentes), et trop strictes
+  // à un tempo plus lent — la précision perçue changeait avec le tempo.
+  const PERFECT_W = 0.12;
+  const GOOD_W = 0.25;
+  const MISS_W = 0.40;
+
+  function themeColor(varName){
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  const ALL_BARS = buildBars();
+
+  let game = null;
+
+  function newGame(){
+    const bpm = parseInt(els.speedRange.value,10);
+    const speed = bpm/100; // les données sont encodées pour un tempo de base de 100 BPM
+    const beatDur = 0.6/speed;       // durée réelle d'un temps au tempo choisi
+    const lead = LEAD_BEATS*beatDur; // temps de chute d'une note, en secondes, à ce tempo
+    const offset = lead;             // délai avant la 1ère note = exactement LEAD_BEATS temps
+    const isDemo = mode==='demo';
+    const playVoice = isDemo ? null : getPlayVoice();
+
+    function hearChecked(v){
+      const row = els.hearRow.querySelector('.chk[data-voice="'+v+'"] input');
+      return row ? row.checked : true;
+    }
+
+    let notes = [];
+    function addVoice(arr, voiceNum){
+      const isPlay = isDemo ? false : (playVoice===voiceNum);
+      const included = isDemo || isPlay || hearChecked(voiceNum);
+      if(!included) return;
+      arr.forEach(n=>{
+        notes.push({ ...n, voice:voiceNum, mode: isPlay ? 'play' : 'ambient' });
+      });
+    }
+    addVoice(VOIX2, 2);
+    addVoice(VOIX1, 1);
+    addVoice(RYTHME.map(n=>({...n, note:-1})), 3);
+
+    notes.sort((a,b)=>a.start-b.start);
+    notes.forEach(n=>{
+      n.scaledStart = offset + n.start/speed;
+      n.scaledDur = n.duration/speed;
+      n.judged = false;
+      n.demoPlayed = false;
+      n.result = null;
+    });
+
+    const maxPlay = notes.filter(n=>n.mode==='play').length;
+
+    // En mode Jeu, on n'affiche que l'instrument de la voix jouée (jamais le
+    // djembé en même temps que le xylophone) ; en mode Démo, tout est visible.
+    const bars = isDemo ? ALL_BARS
+      : (playVoice===3 ? ALL_BARS.filter(b=>b.isRhythm) : ALL_BARS.filter(b=>!b.isRhythm));
+
+    const metroBeats = [];
+    if(els.metroChk.checked){
+      // Continu dès la fin du décompte (t=0, juste après le dernier clic du
+      // compte à rebours) jusqu'à la fin du jeu — pas seulement à partir de
+      // la 1ère note (qui n'arrive qu'après le délai OFFSET). La 1ère note
+      // tombe exactement sur le LEAD_BEATS-ième clic (offset = LEAD_BEATS
+      // temps pile), donc toujours le même nombre de clics quel que soit le
+      // tempo choisi.
+      const totalDuration = offset + SONG_END/speed;
+      const totalBeats = Math.ceil(totalDuration/beatDur);
+      for(let k=0;k<totalBeats;k++){
+        metroBeats.push({ t: k*beatDur, accent:(k%4===0), played:false });
+      }
+    }
+
+    return {
+      mode, playVoice, bars, notes, speed, maxPlay, metroBeats, lead, offset,
+      totalDuration: offset + SONG_END/speed,
+      elapsed: 0,
+      score: 0,
+      combo: 0,
+      maxCombo: 0,
+      counts: {parfait:0, bien:0, passable:0, rate:0},
+      running: false,
+      barFlash: bars.map(()=>0),
+      popups: [],
+    };
+  }
+
+  /* =========================================================
+     6. GÉOMÉTRIE
+     ========================================================= */
+  function barRects(g){
+    const bars = g ? g.bars : ALL_BARS;
+    const barH = Math.max(140, Math.min(360, H*0.44));
+    const n = bars.length || 1;
+    const y = H - barH;
+    if(n>1 && bars[0].colFrac){
+      // Clavier : les colonnes collent aux positions des lames du SVG
+      // généré (assets/xylo_keyboard.svg) — 11 lames égales (BAR_COL_BOUNDS).
+      return bars.map(b=>({
+        x: b.colFrac[0]*W, y, w: (b.colFrac[1]-b.colFrac[0])*W, h: barH, bar:b
+      }));
+    }
+    const gap = 7;
+    const w = (W - gap*(n+1))/n;
+    return bars.map((b,i)=>({
+      x: gap + i*(w+gap), y, w, h: barH, bar:b
+    }));
+  }
+  function hitLineY(g){
+    const rects = barRects(g);
+    return rects.length ? rects[0].y : H*0.8;
+  }
+  // Le clavier est incliné en 3D (perspective) : son bord visuel supérieur
+  // ne tombe pas exactement au même endroit que le rect "à plat" utilisé
+  // pour la logique. On mesure la vraie position à l'écran pour que la
+  // ligne pointillée (et l'arrivée des notes) coïncide avec ce qu'on voit.
+  function visualHitLineY(g){
+    if(!g) return hitLineY(g);
+    const box = g.bars.some(b=>b.isRhythm) ? els.imgDjembeBox : els.imgKeyboard;
+    if(box.style.display === 'none') return hitLineY(g);
+    const boxRect = box.getBoundingClientRect();
+    const stageRect = els.cv.getBoundingClientRect();
+    if(boxRect.width===0 && boxRect.height===0) return hitLineY(g);
+    return boxRect.top - stageRect.top;
+  }
+  function layoutInstrumentLayer(){
+    // Avant la 1ère partie (écran de réglages), on prévisualise le xylophone.
+    const bars = game ? game.bars : ALL_BARS.filter(b=>!b.isRhythm);
+    const rects = barRects({bars});
+    const kbIdx=[], rhythmIdx=[];
+    bars.forEach((b,i)=>{ if(b.isRhythm) rhythmIdx.push(i); else kbIdx.push(i); });
+
+    // Le djembé ne s'affiche jamais en même temps que le clavier du xylophone.
+    els.imgKeyboard.style.display = kbIdx.length ? '' : 'none';
+    els.imgDjembeBox.style.display = rhythmIdx.length ? '' : 'none';
+
+    if(kbIdx.length){
+      // La zone image couvre toute la largeur disponible (BAR_COL_BOUNDS
+      // découpe cette même largeur en 11 parts égales dans barRects), donc
+      // le SVG du clavier et les colonnes de jeu sont toujours alignés par
+      // construction.
+      const first = rects[kbIdx[0]];
+      els.imgKeyboard.style.left = '0px';
+      els.imgKeyboard.style.top = first.y+'px';
+      els.imgKeyboard.style.width = W+'px';
+      els.imgKeyboard.style.height = first.h+'px';
+      els.imgKeyboard.innerHTML = '<img src="assets/xylo_keyboard.svg" alt="" style="display:block;width:100%;height:100%;object-fit:fill;">';
+    }
+    if(rhythmIdx.length){
+      const r = rects[rhythmIdx[0]];
+      els.imgDjembeBox.style.left = r.x+'px';
+      els.imgDjembeBox.style.top = r.y+'px';
+      els.imgDjembeBox.style.width = r.w+'px';
+      els.imgDjembeBox.style.height = r.h+'px';
+    }
+  }
+
+  /* =========================================================
+     7. BOUCLE DE JEU
+     ========================================================= */
+  function update(dt){
+    if(!game || !game.running) return;
+    // Horloge absolue (et non un cumul de dt par frame) : reste juste même
+    // si le navigateur ralentit/throttle les frames (onglet en arrière-plan, etc.)
+    game.elapsed = (performance.now() - game.startPerf) / 1000;
+    const g = game;
+
+    for(const n of g.notes){
+      if(n.mode === 'ambient'){
+        if(!n.demoPlayed && g.elapsed >= n.scaledStart){
+          n.demoPlayed = true;
+          if(n.voice===3) playDjembe(n.accent); else playTone(audioPitch(n.voice, n.note), 0.75);
+          flashBarFor(g, n);
+        }
+      } else {
+        if(!n.judged && g.elapsed > n.scaledStart + MISS_W/g.speed){
+          n.judged = true;
+          n.result = 'rate';
+          applyGrade(g, n, 'rate');
+        }
+      }
+    }
+
+    for(const mb of g.metroBeats){
+      if(!mb.played && g.elapsed >= mb.t){ mb.played = true; playMetronome(mb.accent); }
+    }
+
+    for(let i=0;i<g.barFlash.length;i++) g.barFlash[i] = Math.max(0, g.barFlash[i]-dt*3.2);
+    g.popups = g.popups.filter(p=>{ p.life -= dt; p.y -= dt*40; return p.life>0; });
+
+    const pct = Math.min(100, Math.round((g.elapsed/g.totalDuration)*100));
+    els.progressVal.textContent = pct + '%';
+
+    if(g.elapsed > g.totalDuration + g.lead + 0.8){
+      endGame();
+    }
+  }
+
+  function barIndexFor(g, note){
+    if(note.voice===3) return g.bars.findIndex(b=>b.isRhythm);
+    // Voix 1 et 2 partagent le même clavier : on retrouve la lame par lettre
+    // de note (classe de hauteur), peu importe l'octave d'écriture.
+    return g.bars.findIndex(b=>!b.isRhythm && pc(b.pitch)===pc(note.note));
+  }
+  function flashBarFor(g, note){
+    const idx = barIndexFor(g, note);
+    if(idx>=0) g.barFlash[idx] = 1;
+  }
+
+  function applyGrade(g, note, grade){
+    note.result = grade;
+    const pts = {parfait:1, bien:1, passable:1, rate:0}[grade]; // 1 point par note
+    g.score += pts;
+    g.counts[grade]++;
+    if(grade === 'rate'){ g.combo = 0; }
+    else { g.combo++; g.maxCombo = Math.max(g.maxCombo, g.combo); }
+    els.scoreVal.textContent = g.score + '/' + g.maxPlay;
+    els.combo.textContent = g.combo;
+    els.combo.classList.remove('pop'); void els.combo.offsetWidth; els.combo.classList.add('pop');
+
+    const idx = barIndexFor(g, note);
+    if(idx>=0){
+      const rects = barRects(g);
+      const r = rects[idx];
+      const labelMap = {
+        parfait:['Parfait !', themeColor('--terracotta')],
+        bien:['Bien', themeColor('--green')],
+        passable:['Passable', themeColor('--ok')],
+        rate:['Raté', themeColor('--miss')]
+      };
+      const [text,color] = labelMap[grade];
+      g.popups.push({text, color, x:r.x+r.w/2, y:r.y-10, life:0.9});
+    }
+  }
+
+  /* =========================================================
+     8. DESSIN (canvas : notes qui tombent, ligne de frappe, flashs,
+        étiquettes — le "vrai" clavier photo est en DOM sous le canvas,
+        voir #instrLayer + layoutInstrumentLayer())
+     ========================================================= */
+  function roundRectPath(c,x,y,w,h,r){
+    r = Math.min(r, w/2, h/2);
+    c.beginPath();
+    c.moveTo(x+r,y);
+    c.arcTo(x+w,y,x+w,y+h,r);
+    c.arcTo(x+w,y+h,x,y+h,r);
+    c.arcTo(x,y+h,x,y,r);
+    c.arcTo(x,y,x+w,y,r);
+    c.closePath();
+  }
+  function drawLabelChip(c, r, text, small){
+    const padX = 7, h = small? 16: 19;
+    c.font = (small?'700 9px':'700 11px') + ' "Inter", sans-serif';
+    const tw = c.measureText(text).width;
+    const w = tw + padX*2;
+    const x = r.x + r.w/2 - w/2;
+    const y = r.y + r.h - h - 8;
+    c.fillStyle = 'rgba(21,22,26,0.72)';
+    roundRectPath(c, x, y, w, h, h/2);
+    c.fill();
+    c.fillStyle = '#F6F4EF';
+    c.textAlign='center'; c.textBaseline='middle';
+    c.fillText(text, r.x+r.w/2, y+h/2+0.5);
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    if(!game){ requestAnimationFrame(draw); return; }
+    const g = game;
+    const rects = barRects(g);
+    const lineY = visualHitLineY(g);
+    const cGreen = themeColor('--green');
+    const cTerra = themeColor('--terracotta');
+    const cPlum = themeColor('--plum');
+    const cMiss = themeColor('--miss');
+
+    for(let i=0;i<rects.length;i++){
+      const r = rects[i];
+      ctx.fillStyle = i%2===0 ? 'rgba(21,22,26,0.02)' : 'rgba(21,22,26,0.045)';
+      // Bande rétrécie (voir LANE_INSET) : la colonne "logique" (zone de tap,
+      // plus généreuse pour rester facile à toucher) est plus large que la
+      // lame visible sur la photo — la photo est prise avec un angle, donc
+      // chaque lame est un peu inclinée (pas un rectangle droit), et une
+      // bande pleine largeur déborde visuellement sur la lame voisine.
+      const inset = r.w*LANE_INSET;
+      ctx.fillRect(r.x+inset, 0, r.w-2*inset, lineY);
+    }
+
+    ctx.strokeStyle = 'rgba(21,22,26,0.18)';
+    ctx.setLineDash([6,6]);
+    ctx.beginPath(); ctx.moveTo(0,lineY); ctx.lineTo(W,lineY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    if(g.running || g.elapsed>0){
+      for(const n of g.notes){
+        // Voix d'accompagnement : entendues, mais pas affichées quand on
+        // joue une voix notée (on ne montre que ce que le joueur doit taper).
+        if(g.mode==='jeu' && n.mode==='ambient') continue;
+        const idx = barIndexFor(g, n);
+        if(idx<0) continue;
+        const r = rects[idx];
+        const timeToHit = n.scaledStart - g.elapsed;
+        const frac = 1 - timeToHit/g.lead;
+        if(frac < -0.15 || frac > 1.25) continue;
+        if(n.judged && n.result !== 'rate' && frac>1.02) continue;
+        // Le CENTRE de la forme (pas son bord inférieur) atteint la ligne
+        // pointillée pile à l'instant du tap : c'est le repère visuel le plus
+        // naturel ("je tape quand c'est centré sur la ligne"), et c'est ce que
+        // compare le jugement (scaledStart vs elapsed) — avant, le bord
+        // inférieur touchait la ligne un peu "en avance" par rapport à ce que
+        // l'œil interprète comme le bon moment, d'où le ressenti de décalage.
+        const centerY = frac*lineY;
+        const inset = r.w*LANE_INSET;
+        const x = r.x+inset, w = r.w-2*inset;
+
+        let color = n.voice===1 ? cTerra : n.voice===2 ? cGreen : cPlum;
+        let alpha = 1;
+        if(n.judged){
+          if(n.result==='rate'){ color = cMiss; alpha = 0.5; }
+          else alpha = 0.35;
+        }
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+
+        if(n.voice===3){
+          // le djembé est un coup net, sans hauteur : un petit disque précis
+          // pile à l'instant du tap, plutôt qu'un bloc qui suggère une durée.
+          const rad = n.accent ? 9 : 7;
+          ctx.beginPath();
+          ctx.arc(x+w/2, centerY, rad, 0, Math.PI*2);
+          ctx.fill();
+        } else {
+          // hauteur plafonnée : un bloc compact rend l'instant exact du tap
+          // (son centre) plus facile à anticiper qu'une longue barre.
+          const rawH = Math.min(30, Math.max(10, (n.scaledDur/g.lead)*lineY));
+          const hpx = Math.max(8, rawH - GAP_PX);
+          const yTop = centerY + hpx/2;
+          roundRectPath(ctx, x, yTop-hpx, w, hpx, 7);
+          ctx.fill();
+          if(hpx > 15 && frac>-0.1 && frac<1.1){
+            ctx.fillStyle = 'rgba(246,244,239,0.95)';
+            ctx.font = '700 9px "Inter", sans-serif';
+            ctx.textAlign='center'; ctx.textBaseline='middle';
+            ctx.fillText(noteLabel(n.note), x+w/2, centerY);
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    rects.forEach((r,i)=>{
+      const b = r.bar;
+      const flash = g.barFlash[i]||0;
+
+      if(flash>0){
+        ctx.save();
+        roundRectPath(ctx, r.x, r.y, r.w, r.h, 12);
+        ctx.clip();
+        ctx.globalAlpha = flash*0.55;
+        ctx.fillStyle = '#F6F4EF';
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      }
+
+      drawLabelChip(ctx, r, b.isRhythm ? 'Djembé' : b.label, r.w<48);
+    });
+
+    ctx.font = '700 14px "Inter", sans-serif';
+    ctx.textAlign='center';
+    for(const p of g.popups){
+      ctx.globalAlpha = Math.max(0, Math.min(1,p.life/0.9));
+      ctx.fillStyle = p.color;
+      ctx.fillText(p.text, p.x, p.y);
+      ctx.globalAlpha = 1;
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  let lastT = null;
+  function frame(t){
+    if(lastT==null) lastT=t;
+    const dt = Math.min(0.05, (t-lastT)/1000);
+    lastT = t;
+    update(dt);
+    requestAnimationFrame(frame);
+  }
+
+  /* =========================================================
+     9. ENTRÉES
+     ========================================================= */
+  function handlePointer(e){
+    if(!game) return;
+    e.preventDefault();
+    const pts = e.changedTouches ? Array.from(e.changedTouches) : [e];
+    for(const pt of pts){
+      const rect = els.cv.getBoundingClientRect();
+      const x = pt.clientX-rect.left, y = pt.clientY-rect.top;
+      const rects = barRects(game);
+      for(let i=0;i<rects.length;i++){
+        const r = rects[i];
+        if(x>=r.x && x<=r.x+r.w && y>=r.y && y<=r.y+r.h){
+          tapBar(i);
+          break;
+        }
+      }
+    }
+  }
+  // Un seul type d'écoute : pointerdown couvre déjà souris/tactile/stylet.
+  // Écouter aussi touchstart en plus faisait parfois déclencher le tap
+  // deux fois sur tablette/téléphone (donc 2 sons de djembé par clic).
+  els.cv.addEventListener('pointerdown', handlePointer, {passive:false});
+
+  function tapBar(idx){
+    const g = game;
+    if(!g) return;
+    const bar = g.bars[idx];
+    ensureAudio();
+    if(bar.isRhythm) playDjembe(false); else playTone(audioPitch(g.playVoice, bar.pitch), 1.0);
+    g.barFlash[idx] = 1;
+
+    if(!g.running) return;
+
+    let best=null, bestDelta=Infinity;
+    for(const n of g.notes){
+      if(n.mode !== 'play') continue;
+      const match = bar.isRhythm ? (n.voice===3) : (pc(n.note)===pc(bar.pitch));
+      if(match && !n.judged){
+        const delta = Math.abs(g.elapsed - n.scaledStart);
+        if(delta<bestDelta){ bestDelta=delta; best=n; }
+      }
+    }
+    // Fenêtres divisées par g.speed : à un tempo plus rapide que la référence
+    // (100 BPM), l'écart réel entre deux notes rétrécit, donc la fenêtre de
+    // tolérance doit rétrécir avec — sinon "parfait" devient très facile à un
+    // tempo rapide et très dur à un tempo lent.
+    if(best && bestDelta<=MISS_W/g.speed){
+      best.judged = true;
+      let grade;
+      if(bestDelta<=PERFECT_W/g.speed) grade='parfait';
+      else if(bestDelta<=GOOD_W/g.speed) grade='bien';
+      else grade='passable';
+      applyGrade(g, best, grade);
+    }
+  }
+
+  /* =========================================================
+     10. FLUX DE JEU
+     ========================================================= */
+  function startFlow(){
+    ensureAudio();
+    game = newGame();
+    resize();
+    els.panel.classList.add('hidden');
+    els.scoreVal.textContent = '0/'+game.maxPlay;
+    els.combo.textContent = '0';
+    els.progressVal.textContent = '0%';
+    els.stopBtn.style.display = 'inline-block';
+
+    // Décompte = 4 temps au tempo réel du morceau (1 mesure de compte avant
+    // la 1ère note). Si le métronome est activé, il clique déjà pendant ce
+    // décompte puis continue sans interruption jusqu'à la fin du jeu.
+    const metroOn = els.metroChk.checked;
+    const beatMs = (60/parseInt(els.speedRange.value,10))*1000;
+    let count = 1;
+    els.countdown.style.display='flex';
+    els.countdown.textContent = count;
+    if(metroOn) playMetronome(true);
+    const iv = setInterval(()=>{
+      count++;
+      if(count<=4){ els.countdown.textContent = count; if(metroOn) playMetronome(count===1); }
+      else {
+        clearInterval(iv);
+        els.countdown.style.display='none';
+        game.startPerf = performance.now();
+        game.running = true;
+      }
+    }, beatMs);
+  }
+
+  // Entoure la/les mesure(s) où le joueur a fait le plus d'erreurs, plutôt que
+  // de colorier chaque note individuellement (plus simple à lire d'un coup
+  // d'œil : "c'est LÀ qu'il faut retravailler", pas 46 points de couleur).
+  //
+  // Le score par mesure est une MOYENNE de sévérité par note jouée, pas un
+  // simple compte d'erreurs : les mesures de cette pièce n'ont pas toutes le
+  // même nombre de notes (3 à 6), donc compter les erreurs brutes désignait
+  // presque toujours les mesures à 6 notes comme "pires", même si elles
+  // étaient en réalité mieux jouées en moyenne qu'une mesure à 3 notes avec
+  // moins d'erreurs mais un taux d'échec plus élevé. La sévérité pondère
+  // aussi le raté (le plus grave) plus que le passable/bien, plutôt que de
+  // traiter toute imperfection à égalité.
+  const SEVERITY = { parfait:0, bien:1, passable:2, rate:3 };
+  function buildReview(g){
+    els.scoreReviewWrap.querySelectorAll('.errorRing').forEach(m=>m.remove());
+    if(g.mode!=='jeu' || !g.playVoice) return;
+    const statsByMeasure = {};
+    g.notes.forEach(n=>{
+      if(n.mode!=='play' || !n.result) return;
+      const mIdx = Math.floor((n.start/0.6)/4);
+      const s = statsByMeasure[mIdx] || (statsByMeasure[mIdx] = {sum:0, count:0});
+      s.sum += SEVERITY[n.result];
+      s.count++;
+    });
+    const avgByMeasure = Object.entries(statsByMeasure)
+      .map(([mIdx, s]) => [Number(mIdx), s.sum/s.count]);
+    if(!avgByMeasure.length) return; // aucune note jugée : rien à entourer
+    const maxAvg = Math.max(...avgByMeasure.map(([,avg])=>avg));
+    if(maxAvg <= 0) return; // tout parfait : rien à entourer
+    const worstMeasures = avgByMeasure
+      .filter(([,avg])=>Math.abs(avg-maxAvg)<1e-9).map(([mIdx])=>mIdx);
+    const MARGIN_X = 12;   // px, marge horizontale autour de la mesure
+    const ABOVE_V1 = 55;   // px, au-dessus de la portée de la voix 1 (hampes/ledger)
+    const BELOW_RYTHME = 35; // px, en dessous de la portée rythme
+    worstMeasures.forEach(mIdx=>{
+      const measure = SCORE_MEASURES[mIdx];
+      if(!measure) return;
+      const y1 = STAFF_Y[measure.sys][1] - ABOVE_V1;
+      const y2 = STAFF_Y[measure.sys][3] + BELOW_RYTHME;
+      const x1 = measure.x1 - MARGIN_X, x2 = measure.x2 + MARGIN_X;
+      const ring = document.createElement('div');
+      ring.className = 'errorRing';
+      ring.style.left = (x1/SCORE_IMG_W*100)+'%';
+      ring.style.top = (y1/SCORE_IMG_H*100)+'%';
+      ring.style.width = ((x2-x1)/SCORE_IMG_W*100)+'%';
+      ring.style.height = ((y2-y1)/SCORE_IMG_H*100)+'%';
+      els.scoreReviewWrap.appendChild(ring);
+    });
+  }
+
+  function endGame(){
+    if(!game || !game.running) return;
+    game.running = false;
+    const g = game;
+    const max = g.maxPlay || 1;
+    const pct = g.mode==='jeu' ? Math.round((g.score/max)*100) : 100;
+
+    document.getElementById('finalScore').textContent = g.mode==='jeu' ? (g.score + ' / ' + max + ' points') : 'Écoute';
+    document.getElementById('finalAcc').textContent = g.mode==='jeu'
+      ? ('Précision : ' + pct + '%  •  Série max : ' + g.maxCombo)
+      : 'Mode démo — rien n\'a été noté.';
+    document.getElementById('cntParfait').textContent = g.counts.parfait;
+    document.getElementById('cntBien').textContent = g.counts.bien;
+    document.getElementById('cntPassable').textContent = g.counts.passable;
+    document.getElementById('cntRate').textContent = g.counts.rate;
+
+    let grade;
+    if(g.mode!=='jeu') grade = 'Écoute terminée';
+    else if(pct>=90) grade='EXCELLENT';
+    else if(pct>=75) grade='TRÈS BIEN';
+    else if(pct>=55) grade='BIEN JOUÉ';
+    else if(pct>=30) grade='À RETRAVAILLER';
+    else grade='ON RECOMMENCE ?';
+    document.getElementById('gradeText').textContent = grade;
+
+    const showReview = g.mode==='jeu';
+    els.reviewSection.style.display = showReview ? '' : 'none';
+    els.summaryCard.classList.toggle('wide', showReview);
+    if(showReview) buildReview(g);
+
+    els.stopBtn.style.display='none';
+    els.summary.style.display='flex';
+  }
+
+  els.startBtn.onclick = startFlow;
+  els.stopBtn.onclick = ()=>{ if(game){ game.running=false; game=null; els.stopBtn.style.display='none'; els.panel.classList.remove('hidden'); layoutInstrumentLayer(); } };
+  els.retryBtn.onclick = ()=>{ els.summary.style.display='none'; startFlow(); };
+  els.menuBtn.onclick = ()=>{ game=null; els.summary.style.display='none'; els.panel.classList.remove('hidden'); layoutInstrumentLayer(); };
+
+  resize();
+  preloadDjembeBuffers();
+  preloadImages().then(()=>{
+    els.loading.style.display = 'none';
+    els.panel.classList.remove('hidden');
+    layoutInstrumentLayer();
+  });
+  requestAnimationFrame(draw);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

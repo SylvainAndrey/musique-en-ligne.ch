@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Sylvain Andrey" description="Biographie de Sylvain Andrey, auteur du site Musique en ligne.">
+  <section class="container bio">
+    <p class="eyebrow"><a href="/a-propos/">À propos</a> · Auteur</p>
+    <div class="bio__layout">
+      <img src="/images/sylvain-andrey.jpg" alt="Portrait de Sylvain Andrey" class="bio__photo" />
+      <div>
+        <h1>Sylvain Andrey</h1>
+        <p>
+          Né le 25 novembre 1990, Sylvain Andrey grandit à Lausanne dans une famille de
+          musiciens amateurs. Son parcours musical le mène à la Haute École de Musique de
+          Lausanne (HEMU), où il décroche un Bachelor en 2013 puis un Master de pédagogie
+          instrumentale en 2015, récompensé par le prix du meilleur récital de fin d'études.
+          Il se perfectionne ensuite à Zurich, à la Zürcher Hochschule der Künste, avec un
+          second Master of Arts obtenu avec mention en 2017.
+        </p>
+        <p>
+          Percussionniste professionnel, il collabore avec plusieurs orchestres suisses
+          (Berner Sinfonieorchester, Orchestre de Chambre de Lausanne, TOBS, Swiss Orchestra,
+          Berner Kammerorchester, entre autres) tout en composant et en arrangeant pour
+          diverses formations et maisons d'édition.
+        </p>
+        <p>
+          Parallèlement à sa carrière musicale, l'enseignement s'impose très tôt dans sa vie :
+          il donne ses premiers cours à 17 ans avant d'enseigner professionnellement la
+          percussion et la batterie dans de nombreuses écoles de musique romandes et
+          alémaniques dès 2013. Il développe aussi ses propres méthodes pédagogiques,
+          publiées en français et en allemand. Depuis 2024, il est également invité comme
+          « Gastdozent » à la Hochschule der Künste Bern (HKB), où il anime chaque semestre
+          de printemps un module destiné aux futurs enseignants.
+        </p>
+        <p>
+          Un tournant décisif survient en 2022, lorsqu'il accompagne une classe de 11ème Harmos lors
+          d'un camp de randonnée : cette expérience révèle son goût pour l'enseignement à
+          l'école obligatoire. En 2024, il concrétise ce nouveau projet professionnel en
+          rejoignant le Cycle d'orientation de la Glâne, à Romont (FR), où il enseigne la
+          musique à mi-temps à des classes de 9ème à 11ème Harmos, y compris des classes de soutien et
+          une classe bilingue français-allemand. En 2026, il change d'école pour rejoindre
+          l'Établissement secondaire des Trois Sapins, à Echallens.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .bio { padding: 3rem 0 4rem; }
+  .bio__layout { display: grid; grid-template-columns: 220px 1fr; gap: 2.5rem; align-items: start; }
+  .bio__photo { border-radius: var(--radius-lg); box-shadow: var(--shadow-card); width: 100%; }
+  .bio p { color: var(--color-ink-soft); }
+  @media (max-width: 640px) {
+    .bio__layout { grid-template-columns: 1fr; }
+    .bio__photo { max-width: 220px; margin: 0 auto; }
+  }
+</style>

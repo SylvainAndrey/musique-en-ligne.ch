@@ -1,0 +1,139 @@
+---
+import { GRADE_LABELS } from '../data/types';
+
+const nav = [
+  { href: '/9h/', label: GRADE_LABELS['9h'] },
+  { href: '/10h/', label: GRADE_LABELS['10h'] },
+  { href: '/11h/', label: GRADE_LABELS['11h'] },
+  { href: '/a-propos/', label: 'À propos' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="site-header__brand">
+      <img src="/images/brand/logo-full.png" alt="www.musique-en-ligne.ch" class="site-header__logo" width="200" height="104" />
+      <span class="site-header__tagline">Enseignement de la musique au secondaire 1</span>
+    </a>
+    <nav class="site-header__nav" aria-label="Navigation principale">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          class:list={['site-header__link', { 'is-active': currentPath.startsWith(item.href) }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <button id="theme-toggle" class="site-header__theme-toggle" type="button" aria-label="Basculer le thème clair/sombre">
+      <span data-icon-light="true">Clair</span>
+      <span data-icon-dark="true">Sombre</span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    padding: 1.75rem;
+    min-height: 7rem;
+  }
+  .site-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--color-ink);
+  }
+  .site-header__logo { width: 5.4rem; height: auto; flex-shrink: 0; }
+  :root[data-theme='dark'] .site-header__logo { filter: invert(1); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .site-header__logo { filter: invert(1); }
+  }
+  .site-header__tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--color-ink-soft);
+    max-width: 22ch;
+    line-height: 1.25;
+  }
+  .site-header__nav {
+    display: flex;
+    gap: 1.75rem;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+  .site-header__link {
+    text-decoration: none;
+    color: var(--color-ink-soft);
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.3em 0;
+    border-bottom: 1.5px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+  }
+  .site-header__link:hover { color: var(--color-ink); }
+  .site-header__link.is-active { color: var(--color-ink); border-color: var(--color-accent); }
+  .site-header__theme-toggle {
+    border: 1px solid var(--color-border-strong);
+    background: transparent;
+    color: var(--color-ink-soft);
+    border-radius: 999px;
+    padding: 0.35em 0.9em;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .site-header__theme-toggle:hover { background: var(--color-bg-sunken); color: var(--color-ink); }
+  .site-header__theme-toggle span { display: none; }
+  :root:not([data-theme='dark']) .site-header__theme-toggle span[data-icon-light] { display: inline; }
+  :root[data-theme='dark'] .site-header__theme-toggle span[data-icon-dark] { display: inline; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .site-header__theme-toggle span[data-icon-light] { display: none; }
+    :root:not([data-theme='light']) .site-header__theme-toggle span[data-icon-dark] { display: inline; }
+  }
+  @media (max-width: 900px) {
+    .site-header__tagline { display: none; }
+  }
+  @media (max-width: 640px) {
+    .site-header__inner { gap: 0.85rem; padding: 1rem 1.25rem; min-height: auto; }
+    .site-header__brand { width: 100%; }
+    .site-header__nav { gap: 0.75rem 1.1rem; margin-left: 0; width: 100%; }
+    .site-header__theme-toggle { margin-left: auto; }
+    .site-header__logo { width: 3.6rem; }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  btn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const current = root.dataset.theme ?? (prefersDark ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    localStorage.setItem('mel-theme', next);
+  });
+</script>

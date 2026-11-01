@@ -1,0 +1,20 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#22303f"/>
+  <!-- alpine ground -->
+  <path d="M0,378 C60,368 100,382 150,372 C200,362 250,376 300,366 L300,400 L0,400 Z" fill="#1b2733"/>
+  <g fill="none" stroke="#f3f0e8" stroke-width="2.5" stroke-linejoin="round">
+    <!-- tapered horn body -->
+    <path d="M62.95,343.57
+      L146.4,220.0
+      L188.9,140.6
+      L208.3,81.5
+      Q246,68 261.7,118.5
+      L213.2,157.4
+      L153.6,225.0
+      L67.05,346.43 Z" fill="#22303f"/>
+    <!-- inner bell rim -->
+    <ellipse cx="235" cy="100" rx="17" ry="7" transform="rotate(35 235 100)" stroke-width="1.6"/>
+  </g>
+  <circle cx="65" cy="345" r="5" fill="#f3f0e8"/>
+  <circle cx="235" cy="100" r="3.5" fill="#c98a52" transform="rotate(35 235 100)"/>
+</svg>

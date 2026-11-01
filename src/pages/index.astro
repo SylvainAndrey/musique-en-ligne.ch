@@ -1,0 +1,193 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { GRADE_LABELS, GRADE_ORDER } from '../data/types';
+import { getThemesByGrade } from '../data/themes';
+
+const gradeImages: Record<string, string> = {
+  '9h': '/images/themes/9h-cordes.svg',
+  '10h': '/images/themes/10h-instruments-a-vent.svg',
+  '11h': '/images/themes/11h-percussion.svg',
+};
+
+const gradeCards = GRADE_ORDER.map((grade) => ({
+  grade,
+  label: GRADE_LABELS[grade],
+  count: getThemesByGrade(grade).length,
+  image: gradeImages[grade],
+}));
+
+const pitch = [
+  {
+    title: 'Écouter',
+    text: "Des dizaines d'extraits vidéo et audio, classés par thème, pour découvrir les instruments, les styles et les œuvres musicales.",
+  },
+  {
+    title: 'Pratiquer',
+    text: 'Des exercices interactifs corrigés instantanément : textes à trous, dictées rythmiques, jeux de tempo et bien plus.',
+  },
+  {
+    title: 'Progresser',
+    text: "La progression de chaque élève est enregistrée directement sur son appareil, sans compte ni inscription.",
+  },
+];
+---
+
+<BaseLayout title="Accueil" description="Apprendre la musique en ligne : théorie, écoute et exercices interactifs pour les classes de 9ème, 10ème et 11ème Harmos en Suisse romande.">
+  <section class="logo-banner">
+    <img src="/images/brand/logo-full.png" alt="www.musique-en-ligne.ch" class="logo-banner__img" width="320" height="167" />
+  </section>
+
+  <section class="hero">
+    <div class="container hero__inner">
+      <h1>La musique s'apprend aussi en s'amusant.</h1>
+      <p class="hero__lead">
+        Théorie, écoute active et exercices interactifs pour accompagner le cours de musique,
+        en classe ou à la maison — vidéos, audios et jeux pédagogiques pour soutenir au mieux
+        les apprentissages.
+      </p>
+      <div class="hero__ctas">
+        <a href="#degres" class="btn btn-primary">Choisir mon degré</a>
+        <a href="/a-propos/" class="btn btn-ghost">À propos du projet</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="degres" class="container degrees">
+    {gradeCards.map((g) => (
+      <a href={`/${g.grade}/`} class="degree-card" data-grade={g.grade}>
+        <div class="degree-card__frame">
+          <img class="degree-card__image" src={g.image} alt="" loading="eager" />
+        </div>
+        <div class="degree-card__caption">
+          <span class="degree-card__num">{g.label}</span>
+          <span class="degree-card__count">{g.count} thèmes</span>
+          <span class="degree-card__arrow" aria-hidden="true">→</span>
+        </div>
+      </a>
+    ))}
+  </section>
+
+  <section class="container pitch">
+    {pitch.map((item, i) => (
+      <div class="pitch__col">
+        <span class="pitch__num">{String(i + 1).padStart(2, '0')}</span>
+        <h2 class="pitch__title">{item.title}</h2>
+        <p class="pitch__text">{item.text}</p>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .logo-banner {
+    display: flex;
+    justify-content: center;
+    padding: 3rem 0 1rem;
+  }
+  .logo-banner__img { width: 220px; height: auto; }
+  :root[data-theme='dark'] .logo-banner__img { filter: invert(1); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .logo-banner__img { filter: invert(1); }
+  }
+
+  .hero { padding: 1rem 0 3.5rem; text-align: center; }
+  .hero__inner { max-width: 62ch; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+  .hero h1 { margin: 0 0 1.25rem; }
+  .hero__lead { font-size: 1.1rem; color: var(--color-ink-soft); margin: 0 0 1.75rem; max-width: 52ch; }
+  .hero__ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  .degrees {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 1rem auto 3rem;
+    max-width: 1100px;
+  }
+  .degree-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-ink);
+  }
+  .degree-card__frame {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--card-tint, var(--color-bg-sunken));
+  }
+  .degree-card[data-grade='9h'] .degree-card__frame { --card-tint: color-mix(in srgb, var(--color-9h) 20%, var(--color-bg-sunken)); }
+  .degree-card[data-grade='10h'] .degree-card__frame { --card-tint: color-mix(in srgb, var(--color-10h) 20%, var(--color-bg-sunken)); }
+  .degree-card[data-grade='11h'] .degree-card__frame { --card-tint: color-mix(in srgb, var(--color-11h) 20%, var(--color-bg-sunken)); }
+  .degree-card__image {
+    max-width: 88%;
+    max-height: 88%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+  }
+  .degree-card:hover .degree-card__image { transform: scale(1.03); }
+  .degree-card__caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.2rem;
+    padding-top: 1rem;
+  }
+  .degree-card__num {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2rem, 5vw, 2.6rem);
+    line-height: 1;
+  }
+  .degree-card[data-grade='9h'] .degree-card__num { color: var(--color-9h); }
+  .degree-card[data-grade='10h'] .degree-card__num { color: var(--color-10h); }
+  .degree-card[data-grade='11h'] .degree-card__num { color: var(--color-11h); }
+  .degree-card__count { font-size: 0.85rem; color: var(--color-ink-soft); }
+  .degree-card__arrow {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--color-ink-faint);
+    margin-top: 0.3rem;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .degree-card:hover .degree-card__arrow { transform: translateY(3px); color: var(--color-accent); }
+
+  .pitch {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 2rem;
+    padding: 3rem 0 5rem;
+    border-top: 1px solid var(--color-border);
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .pitch__col { display: flex; flex-direction: column; align-items: center; }
+  .pitch__num {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 1.3rem;
+    color: var(--color-accent);
+    margin-bottom: 0.6rem;
+  }
+  .pitch__title { margin: 0 0 0.5rem; font-size: 1.25rem; }
+  .pitch__text { color: var(--color-ink-soft); margin: 0; max-width: 32ch; }
+
+  @media (max-width: 800px) {
+    .degrees { grid-template-columns: 1fr; max-width: 420px; }
+    .pitch { grid-template-columns: 1fr; row-gap: 2.5rem; }
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 0.5rem 0 2.5rem; }
+    .logo-banner { padding: 2rem 0 0.5rem; }
+    .logo-banner__img { width: 170px; }
+  }
+</style>

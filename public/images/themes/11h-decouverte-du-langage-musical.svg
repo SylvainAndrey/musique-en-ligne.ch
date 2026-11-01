@@ -1,0 +1,43 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#3d2233"/>
+  <g stroke="#f3f0e8" stroke-width="2" opacity="0.85">
+    <line x1="30" y1="180" x2="270" y2="180"/>
+    <line x1="30" y1="205" x2="270" y2="205"/>
+    <line x1="30" y1="230" x2="270" y2="230"/>
+    <line x1="30" y1="255" x2="270" y2="255"/>
+    <line x1="30" y1="280" x2="270" y2="280"/>
+  </g>
+  <!-- group of 3 : notes alternant ligne / interligne (Do-Ré-Mi) -->
+  <g fill="#f3f0e8">
+    <circle cx="55" cy="255" r="7"/>
+    <circle cx="80" cy="242.5" r="7"/>
+    <circle cx="105" cy="230" r="7"/>
+  </g>
+  <g stroke="#f3f0e8" stroke-width="2.5">
+    <line x1="61" y1="252" x2="61" y2="185"/>
+    <line x1="86" y1="239.5" x2="86" y2="185"/>
+    <line x1="111" y1="227" x2="111" y2="185"/>
+  </g>
+  <path d="M61,185 L111,185 L111,192 L61,192 Z" fill="#c98a52"/>
+  <!-- group of 2 : suite de l'alternance (Fa-Sol) -->
+  <g fill="#f3f0e8">
+    <circle cx="150" cy="217.5" r="7"/>
+    <circle cx="175" cy="205" r="7"/>
+  </g>
+  <g stroke="#f3f0e8" stroke-width="2.5">
+    <line x1="156" y1="214.5" x2="156" y2="185"/>
+    <line x1="181" y1="202" x2="181" y2="185"/>
+  </g>
+  <path d="M156,185 L181,185 L181,192 L156,192 Z" fill="#f3f0e8"/>
+  <!-- group of 2 : la mélodie redescend, alternance conservée (Fa-Sol) -->
+  <g fill="#f3f0e8">
+    <circle cx="215" cy="217.5" r="7"/>
+    <circle cx="240" cy="230" r="7"/>
+  </g>
+  <g stroke="#f3f0e8" stroke-width="2.5">
+    <line x1="221" y1="214.5" x2="221" y2="185"/>
+    <line x1="246" y1="227" x2="246" y2="185"/>
+  </g>
+  <path d="M221,185 L246,185 L246,192 L221,192 Z" fill="#f3f0e8"/>
+  <text x="30" y="140" font-family="Georgia, serif" font-size="34" fill="#c98a52">7/8</text>
+</svg>

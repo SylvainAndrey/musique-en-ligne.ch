@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThemeCard from '../../components/ThemeCard.astro';
+import { getThemesByGrade } from '../../data/themes';
+import { GRADE_LABELS, GRADE_ORDER, type Grade } from '../../data/types';
+
+export function getStaticPaths() {
+  return GRADE_ORDER.map((grade) => ({ params: { grade }, props: { grade } }));
+}
+
+const { grade } = Astro.props as { grade: Grade };
+// Ordre fixe pour certains thèmes structurants ; les autres suivent l'ordre alphabétique.
+const THEME_PRIORITY: Record<string, number> = {
+  'decouverte-du-langage-musical': 0,
+  'jeux': 1,
+  'bucket-drumming': 2,
+};
+const gradeThemes = getThemesByGrade(grade).sort((a, b) => {
+  const pa = THEME_PRIORITY[a.slug];
+  const pb = THEME_PRIORITY[b.slug];
+  if (pa !== undefined || pb !== undefined) {
+    if (pa === undefined) return 1;
+    if (pb === undefined) return -1;
+    return pa - pb;
+  }
+  return a.title.localeCompare(b.title, 'fr');
+});
+const label = GRADE_LABELS[grade];
+
+const intros: Record<Grade, string> = {
+  '9h': "Première année du secondaire 1 : découverte du langage musical, de la voix, des cordes et de l'écoute active.",
+  '10h': "Deuxième année : on approfondit avec les instruments à vent, la musique orchestrale et le développement de l'oreille.",
+  '11h': "Dernière année de scolarité obligatoire : percussion du monde entier, histoire du jazz et perfectionnement du langage musical et de l'oreille.",
+};
+
+---
+
+<BaseLayout title={`Degré ${label}`} description={intros[grade]}>
+  <section class="grade-hero">
+    <div class="container">
+      <p class="eyebrow">Degré {label}</p>
+      <h1>Musique en {label}</h1>
+      <p class="grade-hero__intro">{intros[grade]}</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <p class="eyebrow theme-list__eyebrow">Sommaire — {gradeThemes.length} thèmes</p>
+    <div class="theme-list">
+      {gradeThemes.map((theme, i) => <ThemeCard theme={theme} index={i + 1} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<script src="../../scripts/progress-badges.ts"></script>
+
+<style>
+  .grade-hero { padding: 3.5rem 0 2.5rem; }
+  .grade-hero__intro { color: var(--color-ink-soft); font-size: 1.05rem; }
+
+  .theme-list__eyebrow { margin-bottom: 1rem; }
+  .theme-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding-bottom: 4rem;
+  }
+</style>

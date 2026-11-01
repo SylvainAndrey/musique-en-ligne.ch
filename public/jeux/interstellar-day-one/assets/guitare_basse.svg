@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="820" viewBox="0 0 600 820" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="neckWood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2a1a10"/>
+      <stop offset="20%" stop-color="#4a2f1c"/>
+      <stop offset="50%" stop-color="#5c3b24"/>
+      <stop offset="80%" stop-color="#422a19"/>
+      <stop offset="100%" stop-color="#24160d"/>
+    </linearGradient>
+    <linearGradient id="stringGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e7e9ec"/>
+      <stop offset="50%" stop-color="#9aa0a6"/>
+      <stop offset="100%" stop-color="#6b7076"/>
+    </linearGradient>
+    <radialGradient id="markerGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fff6e8"/>
+      <stop offset="55%" stop-color="#d8b05a"/>
+      <stop offset="100%" stop-color="#8a5a24"/>
+    </radialGradient></defs>
+  <rect x="0" y="0" width="600" height="820" fill="url(#neckWood)"/>
+  <circle cx="525" cy="780" r="9" fill="#cbb98a" opacity="0.8"/>
+  <rect x="-3" y="40" width="6" height="740" fill="url(#stringGrad)" opacity="0.9"/><rect x="148.25" y="40" width="3.5" height="740" fill="url(#stringGrad)" opacity="0.9"/><rect x="298.25" y="40" width="3.5" height="740" fill="url(#stringGrad)" opacity="0.9"/><rect x="448.25" y="40" width="3.5" height="740" fill="url(#stringGrad)" opacity="0.9"/><rect x="597" y="40" width="6" height="740" fill="url(#stringGrad)" opacity="0.9"/>
+  <rect x="0" y="656" width="600" height="8" fill="url(#stringGrad)"/><text x="14" y="650" font-family="Georgia,serif" font-size="22" fill="#cbb98a" opacity="0.85">E</text><rect x="0" y="497" width="600" height="6" fill="url(#stringGrad)"/><text x="14" y="490" font-family="Georgia,serif" font-size="22" fill="#cbb98a" opacity="0.85">A</text><rect x="0" y="337.8" width="600" height="4.4" fill="url(#stringGrad)"/><text x="14" y="330" font-family="Georgia,serif" font-size="22" fill="#cbb98a" opacity="0.85">D</text><rect x="0" y="188.4" width="600" height="3.2" fill="url(#stringGrad)"/><text x="14" y="180" font-family="Georgia,serif" font-size="22" fill="#cbb98a" opacity="0.85">G</text>
+  <text x="75" y="810" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#cbb98a" opacity="0.45">0</text><text x="225" y="810" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#cbb98a" opacity="0.45">1</text><text x="375" y="810" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#cbb98a" opacity="0.45">2</text><text x="525" y="810" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#cbb98a" opacity="0.45">3</text>
+  <g transform="translate(225,660) scale(0.46875,2.4117647058823533)">
+      <circle cx="0" cy="0" r="30" fill="url(#markerGrad)" stroke="#2a1a10" stroke-width="3" vector-effect="non-scaling-stroke"/>
+      <text x="0" y="9.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#2a1a10">Fa</text>
+    </g><g transform="translate(487.5,660) scale(0.46875,2.4117647058823533)">
+      <circle cx="0" cy="0" r="30" fill="url(#markerGrad)" stroke="#2a1a10" stroke-width="3" vector-effect="non-scaling-stroke"/>
+      <text x="0" y="9.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#2a1a10">Sol</text>
+    </g><g transform="translate(75,500) scale(0.46875,2.4117647058823533)">
+      <circle cx="0" cy="0" r="30" fill="url(#markerGrad)" stroke="#2a1a10" stroke-width="3" vector-effect="non-scaling-stroke"/>
+      <text x="0" y="9.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#2a1a10">La</text>
+    </g><g transform="translate(375,500) scale(0.46875,2.4117647058823533)">
+      <circle cx="0" cy="0" r="30" fill="url(#markerGrad)" stroke="#2a1a10" stroke-width="3" vector-effect="non-scaling-stroke"/>
+      <text x="0" y="9.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#2a1a10">Si</text>
+    </g><g transform="translate(562.5,500) scale(0.46875,2.4117647058823533)">
+      <circle cx="0" cy="0" r="30" fill="url(#markerGrad)" stroke="#2a1a10" stroke-width="3" vector-effect="non-scaling-stroke"/>
+      <text x="0" y="9.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#2a1a10">Do</text>
+    </g>
+</svg>

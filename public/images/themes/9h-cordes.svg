@@ -1,0 +1,32 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#2b4433"/>
+  <g fill="none" stroke="#f3f0e8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- bow -->
+    <line x1="55" y1="90" x2="235" y2="330" stroke-width="2.5"/>
+    <line x1="60" y1="86" x2="66" y2="94"/>
+    <line x1="230" y1="326" x2="238" y2="334"/>
+    <!-- violin body -->
+    <path d="M150,148
+      C196,148 210,172 205,200
+      C201,222 180,228 176,244
+      C172,260 206,270 214,300
+      C220,324 198,338 150,338
+      C102,338 80,324 86,300
+      C94,270 128,260 124,244
+      C120,228 99,222 95,200
+      C90,172 104,148 150,148 Z"/>
+    <!-- f-holes -->
+    <path d="M126,196 C130,206 130,216 124,224" stroke-width="2.5"/>
+    <path d="M174,196 C170,206 170,216 176,224" stroke-width="2.5"/>
+    <!-- neck + fingerboard -->
+    <rect x="143" y="66" width="14" height="84" rx="2"/>
+    <!-- scroll -->
+    <path d="M150,66 C150,50 128,52 130,66 C131,75 143,74 143,66" stroke-width="2.5"/>
+    <!-- strings -->
+    <line x1="145" y1="70" x2="128" y2="330"/>
+    <line x1="149" y1="70" x2="140" y2="332"/>
+    <line x1="153" y1="70" x2="162" y2="332"/>
+    <line x1="157" y1="70" x2="174" y2="330"/>
+  </g>
+  <circle cx="150" cy="203" r="3" fill="#c98a52"/>
+</svg>

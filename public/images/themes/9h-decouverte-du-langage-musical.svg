@@ -1,0 +1,18 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#2b4433"/>
+  <g fill="none" stroke="#f3f0e8" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <!-- metronome body -->
+    <path d="M95,336 L205,336 L178,108 L122,108 Z"/>
+    <!-- crown -->
+    <path d="M138,108 L150,84 L162,108"/>
+    <!-- tick marks -->
+    <line x1="118" y1="290" x2="132" y2="290" stroke-width="2"/>
+    <line x1="123" y1="240" x2="136" y2="240" stroke-width="2"/>
+    <line x1="128" y1="190" x2="139" y2="190" stroke-width="2"/>
+    <line x1="133" y1="145" x2="143" y2="145" stroke-width="2"/>
+  </g>
+  <!-- pendulum -->
+  <line x1="150" y1="130" x2="188" y2="310" stroke="#f3f0e8" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M182,210 L196,222 L182,234 L168,222 Z" fill="#c98a52"/>
+  <circle cx="150" cy="128" r="5" fill="#f3f0e8"/>
+</svg>

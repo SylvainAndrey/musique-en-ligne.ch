@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="whiteKey" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f3f1ec"/>
+      <stop offset="100%" stop-color="#e6e2d8"/>
+    </linearGradient>
+    <linearGradient id="blackKey" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a3a3d"/>
+      <stop offset="55%" stop-color="#17171a"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+    <linearGradient id="blackSheen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient></defs>
+  <rect x="0" y="0" width="1500" height="820" fill="#cfcabd"/>
+  <g>
+      <rect x="3" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(75,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Do</text>
+  </g>
+    </g><g>
+      <rect x="153" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(225,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Ré</text>
+  </g>
+    </g><g>
+      <rect x="303" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(375,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Mi</text>
+  </g>
+    </g><g>
+      <rect x="453" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(525,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Fa</text>
+  </g>
+    </g><g>
+      <rect x="603" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(675,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Sol</text>
+  </g>
+    </g><g>
+      <rect x="753" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(825,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">La</text>
+  </g>
+    </g><g>
+      <rect x="903" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(975,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Si</text>
+  </g>
+    </g><g>
+      <rect x="1053" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(1125,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Do</text>
+  </g>
+    </g><g>
+      <rect x="1203" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(1275,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Ré</text>
+  </g>
+    </g><g>
+      <rect x="1353" y="0" width="144" height="820" rx="10" fill="url(#whiteKey)" stroke="#cfcabd" stroke-width="2"/>
+      <g transform="translate(1425,620) scale(1.171875,2.4117647058823533)">
+    <circle cx="0" cy="0" r="30" fill="#1a1a1a"/>
+    <text x="0" y="11.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="32" fill="#ffffff">Mi</text>
+  </g>
+    </g>
+  <g>
+        <rect x="112.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackKey)"/>
+        <rect x="112.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackSheen)"/>
+      </g><g>
+        <rect x="262.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackKey)"/>
+        <rect x="262.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackSheen)"/>
+      </g><g>
+        <rect x="562.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackKey)"/>
+        <rect x="562.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackSheen)"/>
+      </g><g>
+        <rect x="712.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackKey)"/>
+        <rect x="712.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackSheen)"/>
+      </g><g>
+        <rect x="862.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackKey)"/>
+        <rect x="862.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackSheen)"/>
+      </g><g>
+        <rect x="1162.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackKey)"/>
+        <rect x="1162.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackSheen)"/>
+      </g><g>
+        <rect x="1312.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackKey)"/>
+        <rect x="1312.5" y="0" width="75" height="459.20000000000005" rx="6" fill="url(#blackSheen)"/>
+      </g>
+</svg>
