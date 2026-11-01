@@ -1,0 +1,57 @@
+# Mise en ligne automatique chez o2switch
+# À chaque envoi (push) sur la branche main, GitHub construit le site
+# (npm run build) puis envoie le contenu de dist/ par FTPS dans public_html/.
+#
+# Secrets à créer dans GitHub : Settings > Secrets and variables > Actions
+#   FTP_SERVER    ex. ftp.musique-en-ligne.ch (ou le nom du serveur o2switch)
+#   FTP_USERNAME  identifiant FTP cPanel
+#   FTP_PASSWORD  mot de passe FTP
+#
+# Les médias (media/, plusieurs Go) ne sont pas sur GitHub : ils ne sont
+# jamais envoyés ni supprimés par ce processus. Quand ils changent, il faut
+# toujours les envoyer à la main (FileZilla).
+
+name: Mise en ligne o2switch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # bouton « Run workflow » pour relancer à la main
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Construire le site
+        run: npm run build
+
+      - name: Envoyer sur o2switch (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/
+          server-dir: public_html/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            media/**

@@ -1,0 +1,14 @@
+# Dépendances et build
+node_modules/
+dist/
+.astro/
+
+# Médias compressés (plusieurs Go) : envoyés à la main chez o2switch
+public/media/
+
+# Divers
+.env
+.env.*
+.DS_Store
+Thumbs.db
+npm-debug.log*

@@ -94,6 +94,31 @@ Génère un dossier `dist/` contenant uniquement des fichiers statiques
 Pour republier après une modification : refaites `npm run build` puis
 renvoyez le contenu de `dist/` (écrasez les anciens fichiers).
 
+## Mise en ligne automatique (GitHub Actions)
+
+Le fichier `.github/workflows/deploy.yml` reconstruit et publie le site à
+chaque envoi (`git push`) sur la branche `main` :
+
+1. GitHub installe les dépendances et lance `npm run build`.
+2. Le contenu de `dist/` est envoyé par FTPS dans `public_html/` chez o2switch.
+   Seuls les fichiers modifiés sont renvoyés (fichier d'état
+   `.ftp-deploy-sync-state.json` sur le serveur, à ne pas supprimer).
+
+Les médias (`public/media/`, plusieurs Go) ne sont pas sur GitHub : le
+déploiement automatique ne les touche jamais. Quand une vidéo ou un audio
+change, relancez `node scripts/build-media.mjs` puis envoyez le dossier
+`media/` à la main (FileZilla).
+
+Configuration (une seule fois) dans GitHub > Settings > Secrets and
+variables > Actions > New repository secret :
+
+- `FTP_SERVER` : serveur FTP o2switch (ex. `ftp.musique-en-ligne.ch`)
+- `FTP_USERNAME` : identifiant du compte FTP (cPanel > Comptes FTP)
+- `FTP_PASSWORD` : mot de passe de ce compte
+
+Suivi : onglet « Actions » du dépôt GitHub (le bouton « Run workflow »
+permet aussi de relancer une mise en ligne à la main).
+
 ## Progression des élèves
 
 Aucune donnée n'est envoyée à un serveur : chaque exercice corrigé enregistre
