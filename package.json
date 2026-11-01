@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "publier-medias": "bash scripts/publier-medias.sh"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

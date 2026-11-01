@@ -105,9 +105,22 @@ chaque envoi (`git push`) sur la branche `main` :
    `/home/qazi4845/musique-en-ligne.ch`. Rien n'est supprimé sur le serveur.
 
 Les médias (`public/media/`, plusieurs Go) ne sont pas sur GitHub : le
-déploiement automatique ne les touche jamais. Quand une vidéo ou un audio
-change, relancez `node scripts/build-media.mjs` puis envoyez le dossier
-`media/` à la main (FileZilla).
+déploiement automatique ne les touche jamais.
+
+### Ajouter des vidéos ou des audios : `npm run publier-medias`
+
+1. Déposez les fichiers bruts dans le dossier source
+   (`/Users/sylvainandrey/www.musique-en-ligne.ch/<degré>/<thème>/...`).
+2. Dans le Terminal, depuis le dossier du projet : `npm run publier-medias`
+
+Le script (`scripts/publier-medias.sh`) compresse les nouveaux fichiers, les
+envoie chez o2switch (FTPS vérifié, uniquement les fichiers absents du
+serveur, rien n'est supprimé ni écrasé), puis enregistre et envoie la liste
+des médias sur GitHub, ce qui met le site à jour.
+
+Une seule fois avant : `brew install node ffmpeg lftp`, et copier le dossier
+`public/media` existant dans le projet (sinon tout serait recompressé). Le mot
+de passe FTP est demandé au premier lancement et rangé dans le trousseau du Mac.
 
 Secrets GitHub (Settings > Secrets and variables > Actions) :
 
