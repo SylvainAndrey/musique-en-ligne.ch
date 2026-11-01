@@ -100,22 +100,19 @@ Le fichier `.github/workflows/deploy.yml` reconstruit et publie le site à
 chaque envoi (`git push`) sur la branche `main` :
 
 1. GitHub installe les dépendances et lance `npm run build`.
-2. Le contenu de `dist/` est envoyé par FTPS dans `public_html/` chez o2switch.
-   Seuls les fichiers modifiés sont renvoyés (fichier d'état
-   `.ftp-deploy-sync-state.json` sur le serveur, à ne pas supprimer).
+2. Le contenu de `dist/` est envoyé par FTPS (avec `lftp`, certificat vérifié)
+   sur le serveur o2switch `casoar.o2switch.net`, dans
+   `/home/qazi4845/musique-en-ligne.ch`. Rien n'est supprimé sur le serveur.
 
 Les médias (`public/media/`, plusieurs Go) ne sont pas sur GitHub : le
 déploiement automatique ne les touche jamais. Quand une vidéo ou un audio
 change, relancez `node scripts/build-media.mjs` puis envoyez le dossier
 `media/` à la main (FileZilla).
 
-Configuration (une seule fois) dans GitHub > Settings > Secrets and
-variables > Actions > New repository secret :
+Secrets GitHub (Settings > Secrets and variables > Actions) :
 
-- `FTP_SERVER` : serveur FTP o2switch (ex. `ftp.musique-en-ligne.ch`)
-- `FTP_USERNAME` : compte FTP dédié créé dans cPanel > Comptes FTP
-  (ex. `deploy@musique-en-ligne.ch`), dont le répertoire est le dossier du
-  site (celui qui contient `index.html`, en général `public_html`)
+- `FTP_USERNAME` : `deploy@musique-en-ligne.ch` (compte FTP créé dans cPanel,
+  répertoire `musique-en-ligne.ch`)
 - `FTP_PASSWORD` : mot de passe de ce compte
 
 Suivi : onglet « Actions » du dépôt GitHub (le bouton « Run workflow »

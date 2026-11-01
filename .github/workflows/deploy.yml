@@ -1,16 +1,15 @@
 # Mise en ligne automatique chez o2switch
 # À chaque envoi (push) sur la branche main, GitHub construit le site
-# (npm run build) puis envoie le contenu de dist/ par FTPS dans public_html/.
+# (npm run build) puis envoie le contenu de dist/ par FTPS (certificat
+# vérifié) dans le dossier du site.
 #
-# Secrets à créer dans GitHub : Settings > Secrets and variables > Actions
-#   FTP_SERVER    ex. ftp.musique-en-ligne.ch (ou le nom du serveur o2switch)
-#   FTP_USERNAME  compte FTP dédié (ex. deploy@musique-en-ligne.ch) dont le
-#                 répertoire est le dossier du site (celui qui contient index.html)
+# Secrets GitHub (Settings > Secrets and variables > Actions) :
+#   FTP_USERNAME  deploy@musique-en-ligne.ch (compte FTP dont le répertoire
+#                 est /home/qazi4845/musique-en-ligne.ch)
 #   FTP_PASSWORD  mot de passe de ce compte FTP
 #
-# Les médias (media/, plusieurs Go) ne sont pas sur GitHub : ils ne sont
-# jamais envoyés ni supprimés par ce processus. Quand ils changent, il faut
-# toujours les envoyer à la main (FileZilla).
+# Rien n'est jamais supprimé sur le serveur : les médias (media/, plusieurs Go,
+# pas sur GitHub) restent en place et s'envoient toujours à la main.
 
 name: Mise en ligne o2switch
 
@@ -22,6 +21,11 @@ on:
 concurrency:
   group: deploy
   cancel-in-progress: false
+
+env:
+  # Nom réel du serveur o2switch : c'est celui inscrit dans son certificat
+  # (ftp.qazi4845.odns.fr y mène aussi, mais le certificat ne le couvre pas).
+  FTP_HOST: casoar.o2switch.net
 
 jobs:
   deploy:
@@ -42,17 +46,39 @@ jobs:
       - name: Construire le site
         run: npm run build
 
+      - name: Installer lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      # Le serveur FTP n'envoie pas ses certificats intermédiaires Let's Encrypt :
+      # on les télécharge depuis l'adresse officielle inscrite dans le certificat
+      # (AIA), puis on vérifie que la chaîne remonte bien à une racine de confiance.
+      - name: Préparer la vérification du certificat
+        run: |
+          echo | openssl s_client -starttls ftp -connect "$FTP_HOST:21" -servername "$FTP_HOST" 2>/dev/null | openssl x509 > leaf.pem
+          cp /etc/ssl/certs/ca-certificates.crt "$RUNNER_TEMP/ca.pem"
+          cur=leaf.pem
+          for i in 1 2 3; do
+            openssl verify -CAfile "$RUNNER_TEMP/ca.pem" leaf.pem >/dev/null 2>&1 && break
+            url=$(openssl x509 -in "$cur" -noout -ext authorityInfoAccess | sed -n 's/.*CA Issuers - URI:\(.*\)/\1/p')
+            [ -z "$url" ] && break
+            curl -fsSL "$url" -o up.der
+            openssl x509 -inform der -in up.der -out "up$i.pem" 2>/dev/null || cp up.der "up$i.pem"
+            cat "up$i.pem" >> "$RUNNER_TEMP/ca.pem"; cur="up$i.pem"
+          done
+          openssl verify -CAfile "$RUNNER_TEMP/ca.pem" leaf.pem
+          rm -f leaf.pem up*.pem up.der
+
       - name: Envoyer sur o2switch (FTPS)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          local-dir: ./dist/
-          server-dir: ./ # le compte FTP s'ouvre directement dans le dossier du site
-          exclude: |
-            **/.git*
-            **/.git*/**
-            media/**
+        env:
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          lftp -u "$FTP_USERNAME,$FTP_PASSWORD" "$FTP_HOST" -e "
+            set ssl:ca-file $RUNNER_TEMP/ca.pem;
+            set ssl:verify-certificate true;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set net:max-retries 3;
+            set net:timeout 30;
+            mirror --reverse --verbose --parallel=4 --exclude-glob media/ dist/ ./;
+            bye"
