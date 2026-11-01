@@ -113,7 +113,9 @@ Configuration (une seule fois) dans GitHub > Settings > Secrets and
 variables > Actions > New repository secret :
 
 - `FTP_SERVER` : serveur FTP o2switch (ex. `ftp.musique-en-ligne.ch`)
-- `FTP_USERNAME` : identifiant du compte FTP (cPanel > Comptes FTP)
+- `FTP_USERNAME` : compte FTP dédié créé dans cPanel > Comptes FTP
+  (ex. `deploy@musique-en-ligne.ch`), dont le répertoire est le dossier du
+  site (celui qui contient `index.html`, en général `public_html`)
 - `FTP_PASSWORD` : mot de passe de ce compte
 
 Suivi : onglet « Actions » du dépôt GitHub (le bouton « Run workflow »

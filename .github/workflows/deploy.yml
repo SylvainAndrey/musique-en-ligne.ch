@@ -4,8 +4,9 @@
 #
 # Secrets à créer dans GitHub : Settings > Secrets and variables > Actions
 #   FTP_SERVER    ex. ftp.musique-en-ligne.ch (ou le nom du serveur o2switch)
-#   FTP_USERNAME  identifiant FTP cPanel
-#   FTP_PASSWORD  mot de passe FTP
+#   FTP_USERNAME  compte FTP dédié (ex. deploy@musique-en-ligne.ch) dont le
+#                 répertoire est le dossier du site (celui qui contient index.html)
+#   FTP_PASSWORD  mot de passe de ce compte FTP
 #
 # Les médias (media/, plusieurs Go) ne sont pas sur GitHub : ils ne sont
 # jamais envoyés ni supprimés par ce processus. Quand ils changent, il faut
@@ -50,7 +51,7 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./dist/
-          server-dir: public_html/
+          server-dir: ./ # le compte FTP s'ouvre directement dans le dossier du site
           exclude: |
             **/.git*
             **/.git*/**
