@@ -15,6 +15,8 @@ import { renderNoteRead } from './note-read';
 import { renderScaleFix } from './scale-fix';
 import { renderComposite } from './composite';
 import { renderIframeGame } from './iframe-game';
+import { renderStaffWrite } from './staff-write';
+import { renderPianoFind } from './piano-find';
 
 const ENGINES: Record<string, EngineRenderer> = {
   'fill-blank': renderFillBlank,
@@ -32,6 +34,8 @@ const ENGINES: Record<string, EngineRenderer> = {
   'scale-fix': renderScaleFix,
   'composite': renderComposite,
   'iframe-game': renderIframeGame,
+  'staff-write': renderStaffWrite,
+  'piano-find': renderPianoFind,
 };
 
 class MelExercise extends HTMLElement {

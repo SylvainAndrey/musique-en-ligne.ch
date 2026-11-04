@@ -47,6 +47,19 @@ mel-exercise.is-done ~ .exo-card__badge {
   color: var(--color-success);
 }
 
+.exo-card__lesson {
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-bg-sunken);
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: var(--color-ink-soft);
+}
+.exo-card__lesson p + p { margin-top: 0.5rem; }
+.exo-card__images { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; margin: 0 0 1.2rem; }
+.exo-card__figure { margin: 0; max-width: 100%; }
+.exo-card__figure img { display: block; max-width: 100%; height: auto; max-height: 340px; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0.4rem; }
+.exo-card__figure figcaption { font-size: 0.8rem; color: var(--color-ink-faint); margin-top: 0.3rem; }
 .exo-card__instructions {
   color: var(--color-ink-soft);
   margin-bottom: 1rem;
@@ -317,6 +330,48 @@ mel-exercise.is-done ~ .exo-card__badge {
 .piano__key--black.is-active,
 .piano__key--black:active { background: var(--color-accent); }
 
+/* écrire des notes altérées sur la portée (staff-write) */
+.sw__help, .pf__help { font-size: 0.9rem; color: var(--color-ink-soft); margin-bottom: 0.6rem; min-height: 1.4em; }
+.sw__scroller { overflow-x: auto; max-width: 100%; }
+.sw__inner { width: 100%; }
+.sw__staff { width: 100%; height: auto; display: block; touch-action: manipulation; }
+.sw__col { fill: transparent; stroke: transparent; cursor: crosshair; }
+.sw__col:hover { fill: var(--color-accent-soft); fill-opacity: 0.35; }
+.sw__col.is-correct { fill: var(--color-success-bg); fill-opacity: 0.6; stroke: var(--color-success); }
+.sw__col.is-wrong { fill: var(--color-error-bg); fill-opacity: 0.6; stroke: var(--color-error); }
+.sw__ghost { fill: var(--color-ink); opacity: 0.25; pointer-events: none; }
+.sw__acc { font-size: 1.5rem; fill: var(--color-ink); pointer-events: none; font-family: 'Noto Music', 'Segoe UI Symbol', serif; }
+.sw__num { font-size: 0.85rem; font-weight: 600; fill: var(--color-ink-soft); font-family: var(--font-body); }
+.sw g, .sw text.sf__clef { pointer-events: none; }
+.sw__controls { display: grid; margin: 0.3rem 0 0.5rem; }
+.sw__ctrl { display: flex; justify-content: center; gap: 0.25rem; }
+.sw__accbtn {
+  min-width: 1.95rem; height: 2.1rem; border-radius: var(--radius-sm); border: 1.5px solid var(--color-border);
+  background: var(--color-bg-raised); font-size: 1.15rem; cursor: pointer; color: var(--color-ink);
+}
+.sw__accbtn.is-on { border-color: var(--color-accent); background: var(--color-accent-soft); }
+.sw.is-locked .sw__col { pointer-events: none; }
+
+/* trouver la touche du piano (piano-find) */
+.pf__targets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem; }
+.pf__target {
+  display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; font-size: 1rem;
+  border: 1.5px solid var(--color-border); border-radius: 999px; background: var(--color-bg-raised); cursor: pointer; color: var(--color-ink);
+}
+.pf__target.is-active { border-color: var(--color-accent); box-shadow: 0 0 0 2px var(--color-accent-soft); }
+.pf__target.is-set { background: var(--color-bg-sunken); }
+.pf__target.is-correct { border-color: var(--color-success); background: var(--color-success-bg); }
+.pf__target.is-wrong { border-color: var(--color-error); background: var(--color-error-bg); }
+.pf__badge {
+  display: inline-grid; place-items: center; min-width: 1.35rem; height: 1.35rem; padding: 0 0.2rem; border-radius: 999px;
+  background: var(--color-accent); color: #fff; font-size: 0.75rem; font-weight: 700; line-height: 1;
+}
+.pf__piano .piano__key--white { flex-direction: column; justify-content: flex-end; gap: 0.3rem; }
+.pf__tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; pointer-events: none; }
+.pf__piano .piano__key.is-answer { box-shadow: inset 0 0 0 3px var(--color-success); }
+.pf__piano .piano__key--white.is-answer { background: var(--color-success-bg); }
+.pf__piano .piano__key--black { padding-bottom: 0.3rem; }
+
 /* lecture de notes sur portée */
 .nr__block { margin-bottom: 1.5rem; }
 .nr__staff { width: 260px; height: 190px; display: block; margin-bottom: 0.8rem; }
@@ -388,6 +443,7 @@ mel-exercise.is-done ~ .exo-card__badge {
 /* mcq */
 .mcq__block { margin-bottom: 1.3rem; }
 .mcq__image { display: block; max-width: 130px; height: auto; border-radius: var(--radius-sm); margin-bottom: 0.8rem; }
+.mcq__image--wide { max-width: min(100%, 760px); background: #fff; padding: 0.3rem; border: 1px solid var(--color-border); }
 .mcq__question { font-size: 1.05rem; margin-bottom: 0.9rem; }
 .mcq__options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.5rem; }
 .mcq__option {

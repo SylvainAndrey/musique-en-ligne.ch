@@ -62,6 +62,12 @@ export function countDoneWithPrefix(prefix: string): number {
   return Object.keys(store).filter((k) => k.startsWith(prefix) && store[k].done).length;
 }
 
+/** Compte les exercices terminés parmi une liste d'identifiants. */
+export function countDoneIn(ids: string[]): number {
+  const store = readStore();
+  return ids.filter((id) => store[id]?.done).length;
+}
+
 export function onProgressChange(callback: () => void): () => void {
   window.addEventListener(EVENT_NAME, callback);
   window.addEventListener('storage', callback);

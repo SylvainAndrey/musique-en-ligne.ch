@@ -1,0 +1,31 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="400" fill="#22303f"/>
+  <g stroke="#f3f0e8" stroke-width="2" opacity="0.9">
+    <line x1="30" y1="150" x2="270" y2="150"/>
+    <line x1="30" y1="175" x2="270" y2="175"/>
+    <line x1="30" y1="200" x2="270" y2="200"/>
+    <line x1="30" y1="225" x2="270" y2="225"/>
+    <line x1="30" y1="250" x2="270" y2="250"/>
+  </g>
+  <g stroke="#f3f0e8" stroke-width="3">
+    <line x1="30" y1="150" x2="30" y2="250"/>
+    <line x1="270" y1="147" x2="270" y2="253" stroke-width="4"/>
+  </g>
+  <!-- Gamme montante avec altérations : dièse, bémol, bécarre -->
+  <g fill="#f3f0e8" font-family="Georgia, 'DejaVu Serif', serif" font-size="34">
+    <text x="44" y="250">♯</text>
+    <ellipse cx="80" cy="250" rx="11" ry="8"/>
+    <ellipse cx="118" cy="237" rx="11" ry="8"/>
+    <text x="134" y="234">♭</text>
+    <ellipse cx="162" cy="225" rx="11" ry="8"/>
+    <ellipse cx="200" cy="212" rx="11" ry="8"/>
+    <text x="216" y="212">♮</text>
+    <ellipse cx="246" cy="200" rx="11" ry="8"/>
+  </g>
+  <g stroke="#e0a458" stroke-width="2.5" fill="none" opacity="0.95">
+    <path d="M80 280 Q99 296 118 280"/>
+    <path d="M118 280 Q140 296 162 280"/>
+    <path d="M162 280 Q181 296 200 280"/>
+    <path d="M200 280 Q223 296 246 280"/>
+  </g>
+</svg>

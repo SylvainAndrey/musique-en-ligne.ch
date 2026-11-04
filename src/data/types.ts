@@ -28,6 +28,8 @@ export type ExerciseEngine =
   | 'scale-fix'
   | 'composite'
   | 'iframe-game'
+  | 'staff-write'
+  | 'piano-find'
   | 'placeholder';
 
 export interface ExerciseDef {
@@ -37,11 +39,19 @@ export interface ExerciseDef {
   instructions: string;
   engine: ExerciseEngine;
   data?: Record<string, unknown>;
+  /** Paragraphes d'explication (leçon) affichés avant la consigne. */
+  lesson?: string[];
+  /** Images d'aide (partition, schéma…) affichées sous la consigne, avant l'exercice. */
+  images?: { src: string; alt: string; caption?: string }[];
 }
 
 export interface ThemeMeta {
   grade: Grade;
   slug: string;
+  /** Slug du thème parent : le thème devient un sous-thème, affiché sur la page du parent (URL /degré/parent/slug/). */
+  parent?: string;
+  /** Ordre d'affichage parmi les sous-thèmes d'un même parent. */
+  order?: number;
   title: string;
   description: string;
   colorVar: '--color-9h' | '--color-10h' | '--color-11h';

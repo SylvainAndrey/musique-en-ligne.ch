@@ -5,6 +5,9 @@ import { renderRhythmFill } from './rhythm-fill';
 import { renderMcq } from './mcq';
 import { renderTrueFalse } from './true-false';
 import { renderMatching } from './matching';
+import { renderStaffWrite } from './staff-write';
+import { renderPianoFind } from './piano-find';
+import { renderScaleFix } from './scale-fix';
 
 /**
  * Moteur "composite" : regroupe plusieurs sous-exercices (potentiellement de moteurs différents)
@@ -20,6 +23,9 @@ const SUB_ENGINES: Record<string, EngineRenderer> = {
   'mcq': renderMcq,
   'true-false': renderTrueFalse,
   'matching': renderMatching,
+  'staff-write': renderStaffWrite,
+  'piano-find': renderPianoFind,
+  'scale-fix': renderScaleFix,
 };
 
 interface CompositePart {

@@ -1,13 +1,14 @@
 ---
 import type { ThemeContent } from '../data/types';
+import { exerciseIds, themeHref } from '../data/themes';
 
 interface Props {
   theme: ThemeContent;
   index: number;
 }
 const { theme, index } = Astro.props;
-const href = `/${theme.grade}/${theme.slug}/`;
-const prefix = `${theme.grade}-${theme.slug}-`;
+const href = themeHref(theme);
+const ids = exerciseIds(theme);
 const num = String(index).padStart(2, '0');
 ---
 
@@ -21,11 +22,11 @@ const num = String(index).padStart(2, '0');
     <p class="theme-card__desc">{theme.description}</p>
     <div class="theme-card__meta">
       {!theme.interactive && <span class="theme-card__badge">Bientôt interactif</span>}
-      <div class="theme-card__progress" data-progress-prefix={prefix} data-progress-total={theme.exercises.length}>
+      <div class="theme-card__progress" data-progress-ids={ids.join('|')} data-progress-total={ids.length}>
         <div class="theme-card__progress-track">
           <div class="theme-card__progress-fill" data-progress-fill></div>
         </div>
-        <span class="theme-card__progress-label" data-progress-label>{theme.exercises.length} exercice{theme.exercises.length !== 1 ? 's' : ''}</span>
+        <span class="theme-card__progress-label" data-progress-label>{ids.length} exercice{ids.length !== 1 ? 's' : ''}</span>
       </div>
     </div>
   </div>

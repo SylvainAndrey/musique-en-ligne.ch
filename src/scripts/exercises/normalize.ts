@@ -2,6 +2,10 @@
 export function normalize(value: string): string {
   return value
     .toLowerCase()
+    // Les altérations comptent : « Ré# », « Ré♯ » et « Ré dièse » sont équivalents (idem bémol, bécarre).
+    .replace(/[#♯]/g, ' diese ')
+    .replace(/♭/g, ' bemol ')
+    .replace(/♮/g, ' becarre ')
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/[’']/g, "'")

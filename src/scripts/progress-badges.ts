@@ -1,11 +1,12 @@
-import { countDoneWithPrefix, onProgressChange } from './progress';
+import { countDoneIn, countDoneWithPrefix, onProgressChange } from './progress';
 
 function updateAll() {
-  document.querySelectorAll<HTMLElement>('[data-progress-prefix]').forEach((el) => {
-    const prefix = el.dataset.progressPrefix!;
+  document.querySelectorAll<HTMLElement>('[data-progress-prefix], [data-progress-ids]').forEach((el) => {
     const total = Number(el.dataset.progressTotal ?? '0');
     if (!total) return;
-    const done = countDoneWithPrefix(prefix);
+    // Liste exacte des exercices (évite de compter d'anciens exercices supprimés) ; sinon, préfixe.
+    const ids = el.dataset.progressIds;
+    const done = ids ? countDoneIn(ids.split('|')) : countDoneWithPrefix(el.dataset.progressPrefix ?? '');
     const pct = Math.round((done / total) * 100);
     const bar = el.querySelector<HTMLElement>('[data-progress-fill]');
     const label = el.querySelector<HTMLElement>('[data-progress-label]');

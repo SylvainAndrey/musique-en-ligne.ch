@@ -1,0 +1,14 @@
+---
+import ThemeView from '../../../../components/ThemeView.astro';
+import { themes } from '../../../../data/themes';
+
+export function getStaticPaths() {
+  return themes
+    .filter((theme) => theme.parent)
+    .map((theme) => ({ params: { grade: theme.grade, theme: theme.parent!, sub: theme.slug }, props: { theme } }));
+}
+
+const { theme } = Astro.props;
+---
+
+<ThemeView theme={theme} />

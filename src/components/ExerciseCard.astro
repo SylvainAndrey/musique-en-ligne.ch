@@ -16,7 +16,22 @@ const num = String(exercise.number).padStart(2, '0');
     <h3 class="exo-card__title">{hideTitle ? `Exercice ${exercise.number}` : exercise.title}</h3>
     <span class="exo-card__badge">{isPlaceholder ? 'Bientôt interactif' : 'Interactif'}</span>
   </div>
+  {exercise.lesson && (
+    <div class="exo-card__lesson">
+      {exercise.lesson.map((para) => <p>{para}</p>)}
+    </div>
+  )}
   <p class="exo-card__instructions">{exercise.instructions}</p>
+  {exercise.images && (
+    <div class="exo-card__images">
+      {exercise.images.map((img) => (
+        <figure class="exo-card__figure">
+          <img src={img.src} alt={img.alt} loading="lazy" />
+          {img.caption && <figcaption>{img.caption}</figcaption>}
+        </figure>
+      ))}
+    </div>
+  )}
 
   {isPlaceholder ? (
     <p class="exo-card__soon">Version interactive à venir — en attendant, réalise cet exercice avec ton enseignant en classe.</p>

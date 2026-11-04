@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MediaGallery from './MediaGallery.astro';
+import ExerciseCard from './ExerciseCard.astro';
+import ThemeCard from './ThemeCard.astro';
+import type { ThemeContent } from '../data/types';
+import { GRADE_LABELS } from '../data/types';
+import { exerciseIds, getChildren, getParent, themeHref } from '../data/themes';
+import '../styles/exercises.css';
+
+interface Props {
+  theme: ThemeContent;
+}
+const { theme } = Astro.props;
+const label = GRADE_LABELS[theme.grade];
+const parent = getParent(theme);
+const children = getChildren(theme);
+const ids = exerciseIds(theme);
+---
+
+
+<BaseLayout title={`${theme.title} (${label})`} description={theme.description}>
+  <section class="theme-hero" style={`--card-accent: var(${theme.colorVar})`}>
+    <div class="container theme-hero__inner" class:list={{ 'has-image': !!theme.heroImage }}>
+      <div class="theme-hero__text">
+        <p class="eyebrow">
+          <a href={`/${theme.grade}/`}>{label}</a> ·{' '}
+          {parent ? <><a href={themeHref(parent)}>{parent.title}</a> · Sous-thème</> : 'Thème'}
+        </p>
+        <h1>{theme.title}</h1>
+        <p class="theme-hero__intro">{theme.intro}</p>
+        {ids.length > 0 && (
+          <div class="theme-hero__progress" data-progress-ids={ids.join('|')} data-progress-total={ids.length}>
+            <div class="theme-hero__progress-track">
+              <div class="theme-hero__progress-fill" data-progress-fill></div>
+            </div>
+            <span class="theme-hero__progress-label" data-progress-label>{ids.length} exercice{ids.length !== 1 ? 's' : ''}</span>
+          </div>
+        )}
+      </div>
+      {theme.heroImage && (
+        <img class="theme-hero__image" src={theme.heroImage} alt="" loading="eager" />
+      )}
+    </div>
+  </section>
+
+  {children.length > 0 && (
+    <section class="container">
+      <h2 class="section-title"><span class="index-number">01</span> Sous-thèmes</h2>
+      <div class="subtheme-list">
+        {children.map((child, i) => <ThemeCard theme={child} index={i + 1} />)}
+      </div>
+    </section>
+  )}
+
+  {theme.sections.length > 0 && (
+    <section class="container">
+      <h2 class="section-title"><span class="index-number">01</span> Médias</h2>
+      <MediaGallery sections={theme.sections} />
+    </section>
+  )}
+
+  {theme.exercises.length > 0 && (
+    <section class="container">
+      {!theme.hideExercisesHeading && (
+        <h2 class="section-title"><span class="index-number">{theme.sections.length > 0 ? '02' : '01'}</span> Exercices</h2>
+      )}
+      {theme.exercises.map((exercise) => <ExerciseCard exercise={exercise} hideTitle={theme.hideExerciseTitles} />)}
+    </section>
+  )}
+</BaseLayout>
+
+{theme.interactive && <script src="../scripts/exercises/base.ts"></script>}
+<script src="../scripts/progress-badges.ts"></script>
+
+<style>
+  .theme-hero {
+    padding: 3.5rem 0 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .theme-hero__inner.has-image {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .theme-hero__image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .theme-hero h1 { margin-bottom: 0.8rem; }
+  .theme-hero__intro { max-width: 68ch; color: var(--color-ink-soft); font-size: 1.05rem; }
+  .theme-hero__progress { max-width: 320px; margin-top: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+  .theme-hero__progress-track {
+    height: 3px;
+    flex: 1;
+    background: var(--color-bg-sunken);
+    overflow: hidden;
+  }
+  .theme-hero__progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--card-accent);
+    transition: width 0.3s ease;
+  }
+  .theme-hero__progress-label { font-size: 0.8rem; color: var(--color-ink-faint); white-space: nowrap; }
+  .section-title { display: flex; align-items: baseline; gap: 0.6rem; }
+  section.container { padding: 2.5rem 0; }
+  .subtheme-list { display: flex; flex-direction: column; gap: 0.9rem; }
+
+  @media (max-width: 720px) {
+    .theme-hero__inner.has-image { grid-template-columns: 1fr; }
+    .theme-hero__image { order: -1; aspect-ratio: 16 / 9; }
+  }
+</style>

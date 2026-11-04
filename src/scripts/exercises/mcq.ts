@@ -14,6 +14,8 @@ interface McqItem {
   /** Image fixe (ex. portrait d'un artiste) affichée à côté du média audio. */
   image?: string;
   imageAlt?: string;
+  /** Affiche l'image en pleine largeur (partition, schéma) au lieu d'une vignette. */
+  imageWide?: boolean;
 }
 
 interface ChordPoolEntry {
@@ -76,7 +78,7 @@ export const renderMcq: EngineRenderer = (container, rawData, ctx) => {
 
     if (item.image) {
       const img = document.createElement('img');
-      img.className = 'mcq__image';
+      img.className = item.imageWide ? 'mcq__image mcq__image--wide' : 'mcq__image';
       img.src = item.image;
       img.alt = item.imageAlt ?? '';
       block.appendChild(img);
