@@ -103,20 +103,20 @@ const theme: ThemeContent = {
       },
     },
     {
-      id: id(6),
+      id: id(13),
       number: 6,
-      title: 'Remplir les espaces',
+      title: 'Chut, il manque des silences',
       instructions:
-        "Reconstitue la ligne rythmique suivante en utilisant uniquement les trois rythmes proposés : la noire, les deux croches liées et les quatre doubles croches liées. Chaque mesure doit faire 4 temps.",
+        "Complète chaque mesure à l'aide de silences uniquement : les rythmes déjà présents (grisés) sont donnés, ajoute seulement ce qu'il manque pour atteindre 4 temps.",
       engine: 'rhythm-fill',
       data: {
-        dragBar: true,
         paletteType: 'note-values',
-        excludeKeys: ['ronde', 'demi-pause', 'blanche', 'soupir', 'demi-soupir', 'croche', 'quart-de-soupir', 'doubles-croches', 'croche-pointee', 'noire-pointee'],
-        extraKeys: ['deux-croches', 'quatre-doubles-croches'],
+        excludeKeys: ['ronde', 'blanche', 'noire', 'croche', 'doubles-croches', 'croche-pointee', 'noire-pointee'],
         rows: [
-          { id: 'm1', label: 'Mesure 1', target: 4 },
-          { id: 'm2', label: 'Mesure 2', target: 4 },
+          { id: 'm1', label: 'Mesure 1', target: 4, given: ['blanche', 'croche'] },
+          { id: 'm2', label: 'Mesure 2', target: 4, given: ['noire', 'deux-croches'] },
+          { id: 'm3', label: 'Mesure 3', target: 4, given: ['croche', 'noire', 'croche'] },
+          { id: 'm4', label: 'Mesure 4', target: 4, given: ['quatre-doubles-croches', 'croche'] },
         ],
       },
     },
@@ -172,131 +172,10 @@ const theme: ThemeContent = {
       },
     },
 
-    // --- Niveau "Analyser" ---
-    {
-      id: id(9),
-      number: 9,
-      title: 'Pile sur le temps',
-      instructions: 'Dans chacun des rythmes ci-dessous, clique sur les notes qui tombent exactement sur un temps.',
-      engine: 'click-target',
-      data: {
-        rows: [
-          { id: 'r1', label: 'Rythme 1', icons: [
-            { id: 'r1-1', glyph: '♩', isBeatStart: true },
-            { id: 'r1-2', glyph: '♩', isBeatStart: true },
-            { id: 'r1-3', glyph: '♩', isBeatStart: true },
-            { id: 'r1-4', glyph: '♩', isBeatStart: true },
-          ] },
-          { id: 'r2', label: 'Rythme 2', icons: [
-            { id: 'r2-1', glyph: '𝅗𝅥', isBeatStart: true },
-            { id: 'r2-2', glyph: '♩', isBeatStart: true },
-            { id: 'r2-3', glyph: '♩', isBeatStart: true },
-          ] },
-          { id: 'r3', label: 'Rythme 3', icons: [
-            { id: 'r3-1', glyph: '♪', isBeatStart: true },
-            { id: 'r3-2', glyph: '♪', isBeatStart: false },
-            { id: 'r3-3', glyph: '♩', isBeatStart: true },
-            { id: 'r3-4', glyph: '♩', isBeatStart: true },
-            { id: 'r3-5', glyph: '♩', isBeatStart: true },
-          ] },
-          { id: 'r4', label: 'Rythme 4', icons: [
-            { id: 'r4-1', glyph: '♩', isBeatStart: true },
-            { id: 'r4-2', glyph: '♪', isBeatStart: true },
-            { id: 'r4-3', glyph: '♪', isBeatStart: false },
-            { id: 'r4-4', glyph: '♩', isBeatStart: true },
-            { id: 'r4-5', glyph: '♩', isBeatStart: true },
-          ] },
-          { id: 'r5', label: 'Rythme 5', icons: [
-            { id: 'r5-1', glyph: '♪', isBeatStart: true },
-            { id: 'r5-2', glyph: '♪', isBeatStart: false },
-            { id: 'r5-3', glyph: '♪', isBeatStart: true },
-            { id: 'r5-4', glyph: '♪', isBeatStart: false },
-            { id: 'r5-5', glyph: '♩', isBeatStart: true },
-            { id: 'r5-6', glyph: '♩', isBeatStart: true },
-          ] },
-          { id: 'r6', label: 'Rythme 6', icons: [
-            { id: 'r6-1', glyph: '𝅗𝅥', isBeatStart: true },
-            { id: 'r6-2', glyph: '𝅗𝅥', isBeatStart: true },
-          ] },
-          { id: 'r7', label: 'Rythme 7', icons: [
-            { id: 'r7-1', glyph: '♩', isBeatStart: true },
-            { id: 'r7-2', glyph: '♩', isBeatStart: true },
-            { id: 'r7-3', glyph: '♪', isBeatStart: true },
-            { id: 'r7-4', glyph: '♪', isBeatStart: false },
-            { id: 'r7-5', glyph: '♩', isBeatStart: true },
-          ] },
-          { id: 'r8', label: 'Rythme 8', icons: [
-            { id: 'r8-1', glyph: '♪', isBeatStart: true },
-            { id: 'r8-2', glyph: '♪', isBeatStart: false },
-            { id: 'r8-3', glyph: '♩', isBeatStart: true },
-            { id: 'r8-4', glyph: '𝅗𝅥', isBeatStart: true },
-          ] },
-          { id: 'r9', label: 'Rythme 9', icons: [
-            { id: 'r9-1', glyph: '♩', isBeatStart: true },
-            { id: 'r9-2', glyph: '♪', isBeatStart: true },
-            { id: 'r9-3', glyph: '♪', isBeatStart: false },
-            { id: 'r9-4', glyph: '♪', isBeatStart: true },
-            { id: 'r9-5', glyph: '♪', isBeatStart: false },
-            { id: 'r9-6', glyph: '♩', isBeatStart: true },
-          ] },
-          { id: 'r10', label: 'Rythme 10', icons: [
-            { id: 'r10-1', glyph: '𝅗𝅥', isBeatStart: true },
-            { id: 'r10-2', glyph: '♪', isBeatStart: true },
-            { id: 'r10-3', glyph: '♪', isBeatStart: false },
-            { id: 'r10-4', glyph: '♩', isBeatStart: true },
-          ] },
-        ],
-      },
-    },
-
-    // --- Niveau "Créer" ---
-    {
-      id: id(10),
-      number: 10,
-      title: 'Cap ou pas cap',
-      instructions:
-        'Crée différents rythmes de 4 temps de bodypercussion (pieds, cuisses, torse, mains, doigts), note-les, puis joue-les.',
-      engine: 'rhythm-fill',
-      data: {
-        paletteType: 'body-percussion',
-        minRows: 4,
-        rows: [{ id: 'r1', label: 'Rythme 1', freeform: true }],
-      },
-    },
-    {
-      id: id(11),
-      number: 11,
-      title: "Composer, c'est créer",
-      instructions:
-        "A) Invente une ligne rythmique de deux mesures à trois temps. B) Invente une ligne rythmique de deux mesures à six temps en utilisant le plus possible de silences et de rythmes différents.",
-      engine: 'rhythm-fill',
-      data: {
-        dragBar: true,
-        groups: [
-          {
-            label: 'A) Deux mesures à 3 temps',
-            paletteType: 'note-values',
-            rows: [
-              { id: 'am1', label: 'Mesure 1', target: 3 },
-              { id: 'am2', label: 'Mesure 2', target: 3 },
-            ],
-          },
-          {
-            label: 'B) Deux mesures à 6 temps — varie les rythmes et les silences',
-            paletteType: 'note-values',
-            rows: [
-              { id: 'bm1', label: 'Mesure 1', target: 6 },
-              { id: 'bm2', label: 'Mesure 2', target: 6 },
-            ],
-          },
-        ],
-      },
-    },
-
     // --- Révision finale : une seule évaluation en plusieurs consignes, modélisée sur le vrai test de synthèse 9H ---
     {
       id: id(12),
-      number: 12,
+      number: 9,
       title: 'Évaluation finale',
       instructions: 'Complète cette évaluation récapitulative en plusieurs consignes, sur le vocabulaire des rythmes, des silences et leur construction.',
       engine: 'composite',
@@ -355,43 +234,7 @@ const theme: ThemeContent = {
             },
           },
           {
-            title: 'Consigne 3 — Pile sur le temps',
-            instructions: 'Comme dans le vrai test, clique sur chaque note ou silence qui tombe exactement sur un temps dans cette ligne rythmique de 4 mesures.',
-            engine: 'click-target',
-            data: {
-              rows: [
-                { id: 'test', label: 'Ligne rythmique (4 mesures de 4 temps)', icons: [
-                  { id: 't1', glyph: '♩', isBeatStart: true },
-                  { id: 't2', glyph: '♪', isBeatStart: true },
-                  { id: 't3', glyph: '♪', isBeatStart: false },
-                  { id: 't4', glyph: '♩', isBeatStart: true },
-                  { id: 't5', glyph: '𝅘𝅥𝅯', isBeatStart: true },
-                  { id: 't6', glyph: '𝅘𝅥𝅯', isBeatStart: false },
-                  { id: 't7', glyph: '𝅘𝅥𝅯', isBeatStart: false },
-                  { id: 't8', glyph: '𝅘𝅥𝅯', isBeatStart: false },
-                  { id: 't9', glyph: '♩', isBeatStart: true },
-                  { id: 't10', glyph: '♩', isBeatStart: true },
-                  { id: 't11', glyph: '♩', isBeatStart: true },
-                  { id: 't12', glyph: '♩', isBeatStart: true },
-                  { id: 't13', glyph: '♩', isBeatStart: true },
-                  { id: 't14', glyph: '𝅘𝅥𝅯', isBeatStart: true },
-                  { id: 't15', glyph: '𝅘𝅥𝅯', isBeatStart: false },
-                  { id: 't16', glyph: '𝅘𝅥𝅯', isBeatStart: false },
-                  { id: 't17', glyph: '𝅘𝅥𝅯', isBeatStart: false },
-                  { id: 't18', glyph: '♪', isBeatStart: true },
-                  { id: 't19', glyph: '♪', isBeatStart: false },
-                  { id: 't20', glyph: '♩', isBeatStart: true },
-                  { id: 't21', glyph: '♩', isBeatStart: true },
-                  { id: 't22', glyph: '♪', isBeatStart: true },
-                  { id: 't23', glyph: '♪', isBeatStart: false },
-                  { id: 't24', glyph: '♩', isBeatStart: true },
-                  { id: 't25', glyph: '𝄽', isBeatStart: true },
-                ] },
-              ],
-            },
-          },
-          {
-            title: 'Consigne 4 — Silences uniquement',
+            title: 'Consigne 3 — Silences uniquement',
             instructions:
               "Comme dans le vrai test, complète chaque mesure à l'aide de silences uniquement : les rythmes déjà présents (grisés) sont donnés, ajoute seulement ce qu'il manque pour atteindre 4 temps.",
             engine: 'rhythm-fill',
@@ -407,7 +250,7 @@ const theme: ThemeContent = {
             },
           },
           {
-            title: 'Consigne 5 — Compose librement',
+            title: 'Consigne 4 — Compose librement',
             instructions: 'Invente deux mesures à 4 temps chacune en utilisant les rythmes et les silences de ton choix. Ils peuvent être utilisés plusieurs fois.',
             engine: 'rhythm-fill',
             data: {
