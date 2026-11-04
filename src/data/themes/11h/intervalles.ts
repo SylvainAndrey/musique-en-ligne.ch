@@ -56,9 +56,9 @@ const theme: ThemeContent = {
       engine: 'mcq',
       data: {
         items: [
-          { question: '1) Malbrough s’en va-t-en guerre', sounds: [{ label: 'La chanson', notes: ['do4', 'mi4', 'mi4', 'mi4', 're4', 'mi4', 'fa4', 'mi4', 'mi4', 're4', 're4', 're4'] }, { label: 'L’intervalle', notes: ['do4', 'mi4'] }], options: SONG_INTERVALS, correctIndex: 1 },
+          { question: '1) Malbrough s’en va-t-en guerre', sounds: [{ label: 'La chanson', notes: ['sol3', 'mi4', 'mi4', 'mi4', 're4', 'mi4', 'fa4', 'mi4', 'mi4', 're4', 're4', 're4'] }, { label: 'L’intervalle', notes: ['sol3', 'mi4'] }], options: SONG_INTERVALS, correctIndex: 4 },
           { question: '2) La Marseillaise', sounds: [{ label: 'La chanson', notes: ['re4', 're4', 're4', 'sol4', 'sol4', 'la4', 'la4', 're5', 'si4', 'sol4'] }, { label: 'L’intervalle', notes: ['re4', 'sol4'] }], options: SONG_INTERVALS, correctIndex: 2 },
-          { question: '3) Une souris verte', sounds: [{ label: 'L’intervalle', notes: ['do4', 'la4'] }], options: SONG_INTERVALS, correctIndex: 4 },
+          { question: '3) Une souris verte', sounds: [{ label: 'La chanson', notes: ['sol4', 'sol4', 'sol4', 'la4', 'sol4', 're4', 'sol4', 'sol4', 'sol4', 'la4', 'sol4', 're4', 'do5', 'si4', 'la4', 'si4', 'do5', 'si4', 'la4'] }, { label: 'L’intervalle', notes: ['sol4', 'la4'] }], options: SONG_INTERVALS, correctIndex: 0 },
           { question: '4) Frère Jacques', sounds: [{ label: 'La chanson', notes: ['do4', 're4', 'mi4', 'do4', 'do4', 're4', 'mi4', 'do4'] }, { label: 'L’intervalle', notes: ['do4', 're4'] }], options: SONG_INTERVALS, correctIndex: 0 },
           { question: '5) Over the Rainbow', sounds: [{ label: 'La chanson', notes: ['do4', 'do5', 'si4', 'sol4', 'la4', 'si4', 'do5'] }, { label: 'L’intervalle', notes: ['do4', 'do5'] }], options: SONG_INTERVALS, correctIndex: 5 },
           { question: '6) Ah ! vous dirai-je, maman (Quand trois poules vont aux champs)', sounds: [{ label: 'La chanson', notes: ['do4', 'do4', 'sol4', 'sol4', 'la4', 'la4', 'sol4'] }, { label: 'L’intervalle', notes: ['do4', 'sol4'] }], options: SONG_INTERVALS, correctIndex: 3 },
