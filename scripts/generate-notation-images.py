@@ -5,6 +5,7 @@ vectorielle que les exercices interactifs (tracé lu dans src/scripts/exercises/
 
 Usage : python3 scripts/generate-notation-images.py
 """
+import json
 import os
 import re
 
@@ -14,6 +15,10 @@ OUT = os.path.join(ROOT, 'public', 'images', '11h-intervalles-et-signatures')
 FONT = "Georgia, 'Times New Roman', 'DejaVu Serif', serif"
 
 CLEF = re.search(r"TREBLE_CLEF_PATH =\s*'([^']+)'", open(CLEF_TS, encoding='utf8').read()).group(1)
+# Chiffres vectoriels (hauteur égale, « chiffres alignés ») pour que chaque chiffre occupe exactement
+# deux interlignes de la portée, quel que soit l'appareil.
+DIGITS = json.load(open(os.path.join(ROOT, 'scripts', 'notation-digits.json'), encoding='utf8'))['digits']
+DIGIT_HEIGHT = 714  # hauteur des chiffres plats (ex. 1, 4, 7) en unités de police
 INK = '#1d1d1b'
 
 
@@ -29,18 +34,29 @@ def clef(x, bottom, gap, color=INK):
     return f'<path transform="translate({x} {bottom}) scale({s:.4f} {-s:.4f})" fill="{color}" d="{CLEF}"/>'
 
 
+def number(text, cx, baseline, gap, color=INK):
+    """Écrit un nombre centré en cx, posé sur `baseline`, haut de deux interlignes."""
+    k = 2 * gap / DIGIT_HEIGHT
+    spacing = -20  # léger resserrement entre deux chiffres (unités de police)
+    total = sum(DIGITS[c]['width'] for c in text) + spacing * (len(text) - 1)
+    x = cx - total * k / 2
+    out = ''
+    for c in text:
+        out += f'<path transform="translate({x:.2f} {baseline}) scale({k:.5f} {-k:.5f})" fill="{color}" d="{DIGITS[c]['d']}"/>'
+        x += (DIGITS[c]['width'] + spacing) * k
+    return out
+
+
 def time_signature(num, den):
-    gap, top, w = 14, 26, 112
+    gap, top = 14, 26
     bottom = top + 4 * gap
     mid = top + 2 * gap
-    cx = 82
-    size = 2 * gap * 1.32
-    body = (
-        staff(4, w - 4, top, gap)
-        + clef(6, bottom, gap)
-        + f'<g font-family="{FONT}" font-weight="700" font-size="{size:.1f}" fill="{INK}" text-anchor="middle">'
-        + f'<text x="{cx}" y="{mid - 1}">{num}</text><text x="{cx}" y="{bottom - 1}">{den}</text></g>'
-    )
+    # Largeur du nombre le plus large (en px), pour centrer les chiffres après la clé et adapter l'image.
+    k = 2 * gap / DIGIT_HEIGHT
+    widest = max(sum(DIGITS[c]['width'] for c in t) * k for t in (num, den))
+    cx = 62 + widest / 2
+    w = max(112, round(cx + widest / 2 + 12))
+    body = staff(4, w - 4, top, gap) + clef(6, bottom, gap) + number(num, cx, mid, gap) + number(den, cx, bottom, gap)
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="112" viewBox="0 0 {w} 112" role="img" aria-label="Signature rythmique {num}/{den}"><rect width="{w}" height="112" fill="#fff"/>{body}</svg>'
 
 
@@ -90,8 +106,7 @@ def hero():
         f'<rect width="300" height="400" fill="{bg}"/>'
         + f'<g opacity="0.9">{staff(30, 270, top, gap, ink, 2)}</g>'
         + clef(34, bottom, gap, ink)
-        + f'<g font-family="{FONT}" font-weight="700" font-size="64" fill="{ink}" text-anchor="middle">'
-        + f'<text x="122" y="{top + 2 * gap - 2}">6</text><text x="122" y="{bottom - 2}">8</text></g>'
+        + number('6', 122, top + 2 * gap, gap, ink) + number('8', 122, bottom, gap, ink)
         + head(186, 0, ink) + head(236, 4, accent)
         + f'<path d="M186 290 Q211 312 236 290" fill="none" stroke="{accent}" stroke-width="2.5"/>'
         + f'<text x="211" y="330" font-family="{FONT}" font-size="20" fill="{accent}" text-anchor="middle">quinte</text>'
