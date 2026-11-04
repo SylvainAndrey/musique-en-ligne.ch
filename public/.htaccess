@@ -6,3 +6,7 @@ RewriteEngine On
 RewriteCond %{HTTPS} off [OR]
 RewriteCond %{HTTP_HOST} ^musique-en-ligne\.ch$ [NC]
 RewriteRule ^ https://www.musique-en-ligne.ch%{REQUEST_URI} [L,R=301]
+
+# Pages déplacées ou renommées (l'ancienne page reste sur le serveur, car la mise en ligne
+# ne supprime rien : on redirige donc explicitement vers la nouvelle adresse).
+RewriteRule ^11h/decouverte-du-langage-musical/intervalles-et-signatures-rythmiques/?(index\.html)?$ /11h/decouverte-du-langage-musical/signatures-rythmiques/ [L,R=301]

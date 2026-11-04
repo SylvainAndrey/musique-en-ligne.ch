@@ -92,25 +92,40 @@ def interval_chart():
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Les intervalles à partir de do"><rect width="{w}" height="{h}" fill="#fff"/>{"".join(parts)}</svg>'
 
 
-def hero():
+def hero(kind):
+    """Images des sous-thèmes 11H (fond prune du degré, même clé de sol vectorielle)."""
     bg, ink, accent = '#3d2233', '#f3f0e8', '#c98a52'
     gap, top = 25, 150
     bottom = top + 4 * gap
     half = gap / 2
 
-    def head(x, step, color):
+    def head(x, step, color=ink):
         y = bottom - step * half
         return f'<ellipse cx="{x}" cy="{y}" rx="11" ry="8" fill="{color}" transform="rotate(-18 {x} {y})"/>'
 
-    body = (
-        f'<rect width="300" height="400" fill="{bg}"/>'
-        + f'<g opacity="0.9">{staff(30, 270, top, gap, ink, 2)}</g>'
-        + clef(34, bottom, gap, ink)
-        + number('6', 122, top + 2 * gap, gap, ink) + number('8', 122, bottom, gap, ink)
-        + head(186, 0, ink) + head(236, 4, accent)
-        + f'<path d="M186 290 Q211 312 236 290" fill="none" stroke="{accent}" stroke-width="2.5"/>'
-        + f'<text x="211" y="330" font-family="{FONT}" font-size="20" fill="{accent}" text-anchor="middle">quinte</text>'
-    )
+    def stem_up(x, step, length=62, color=ink):
+        y = bottom - step * half
+        return f'<line x1="{x + 10}" y1="{y - 2}" x2="{x + 10}" y2="{y - length}" stroke="{color}" stroke-width="2.5"/>'
+
+    body = f'<rect width="300" height="400" fill="{bg}"/>' + f'<g opacity="0.9">{staff(30, 270, top, gap, ink, 2)}</g>' + clef(34, bottom, gap, ink)
+    if kind == 'intervalles':
+        body += head(150, 0) + head(220, 4, accent)
+        body += f'<path d="M150 290 Q185 312 220 290" fill="none" stroke="{accent}" stroke-width="2.5"/>'
+        body += f'<text x="185" y="330" font-family="{FONT}" font-size="20" fill="{accent}" text-anchor="middle">quinte</text>'
+    elif kind == 'signatures':
+        body += number('6', 134, top + 2 * gap, gap, ink) + number('8', 134, bottom, gap, ink)
+        xs, steps = [186, 214, 242], [2, 3, 4]
+        for x, st in zip(xs, steps):
+            body += head(x, st) + stem_up(x, st, 70 + (st - 2) * 0)
+        y_beam = bottom - 2 * half - 70
+        body += f'<path d="M{xs[0] + 9} {y_beam} L{xs[-1] + 11.5} {y_beam - 2 * half} L{xs[-1] + 11.5} {y_beam - 2 * half + 7} L{xs[0] + 9} {y_beam + 7} Z" fill="{ink}"/>'
+    elif kind == 'dictee':
+        for x, st in zip([130, 170, 210], [0, 2, 4]):
+            body += head(x, st) + stem_up(x, st)
+        body += f'<text x="250" y="{bottom - 6 * half + 9}" font-family="{FONT}" font-size="46" font-weight="700" fill="{accent}" text-anchor="middle">?</text>'
+    elif kind == 'lecture':
+        body += head(170, 2, accent)
+        body += f'<text x="170" y="330" font-family="{FONT}" font-size="24" fill="{accent}" text-anchor="middle">sol</text>'
     return f'<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">{body}</svg>'
 
 
@@ -123,8 +138,9 @@ def main():
             f.write(time_signature(num, den))
     with open(os.path.join(OUT, 'intervalles.svg'), 'w', encoding='utf8') as f:
         f.write(interval_chart())
-    with open(os.path.join(ROOT, 'public', 'images', 'themes', '11h-intervalles-et-signatures-rythmiques.svg'), 'w', encoding='utf8') as f:
-        f.write(hero())
+    for kind, name in [('intervalles', '11h-intervalles'), ('signatures', '11h-signatures-rythmiques'), ('dictee', '11h-dictee-musicale'), ('lecture', '11h-lecture-de-notes')]:
+        with open(os.path.join(ROOT, 'public', 'images', 'themes', f'{name}.svg'), 'w', encoding='utf8') as f:
+            f.write(hero(kind))
     print('Images générées dans', OUT)
 
 

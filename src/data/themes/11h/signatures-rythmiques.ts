@@ -1,16 +1,15 @@
 import type { ThemeContent } from '../../types';
 
-// Sous-thème de « Découverte du langage musical » (11H), d'après le dossier
-// « 11H – Découverte du langage musical – Intervalles et signatures rythmiques ».
+// Sous-thème de « Découverte du langage musical » (11H), d'après la partie « signatures rythmiques » du dossier
+// « 11H – Découverte du langage musical – Intervalles et signatures rythmiques » (la partie intervalles est dans Développement auditif › Intervalles).
 // Les images de signatures et le tableau des intervalles sont générés par scripts/generate-notation-images.py.
 const GRADE = '11h';
-const SLUG = 'intervalles-et-signatures-rythmiques';
-const id = (n: number) => `${GRADE}-${SLUG}-${n}`;
+const SLUG = 'signatures-rythmiques';
+// Identifiants d'origine (« intervalles-et-signatures-rythmiques ») conservés pour garder la progression des élèves.
+const id = (n: number) => `${GRADE}-intervalles-et-signatures-rythmiques-${n}`;
 const IMG = '/images/11h-intervalles-et-signatures';
 const sig = (num: number, den: number) => `${IMG}/signature-${num}-${den}.svg`;
 
-const INTERVALS = ['Prime (unisson)', 'Seconde', 'Tierce', 'Quarte', 'Quinte', 'Sixte', 'Septième', 'Octave'];
-const SONG_INTERVALS = ['Seconde', 'Tierce', 'Quarte', 'Quinte', 'Sixte', 'Octave'];
 const BEATS = ['1 temps', '2 temps', '3 temps', '4 temps'];
 
 const theme: ThemeContent = {
@@ -18,100 +17,20 @@ const theme: ThemeContent = {
   slug: SLUG,
   parent: 'decouverte-du-langage-musical',
   order: 2,
-  title: 'Intervalles et signatures rythmiques',
-  description: "Reconnaître et écrire les intervalles, comprendre les signatures rythmiques binaires, ternaires et irrégulières.",
+  title: 'Signatures rythmiques',
+  description: 'Comprendre et écrire les signatures rythmiques binaires, ternaires et irrégulières.',
   colorVar: '--color-11h',
   icon: '🎼',
   interactive: true,
   intro:
-    "Les intervalles sont l'espacement entre deux notes : on les définit grâce aux tons et demi-tons qui les constituent et on les compte de la note de départ jusqu'à la note d'arrivée incluse. Chanter à des intervalles différents permet de créer des polyphonies. La signature rythmique, elle, est une fraction placée au début de la portée qui indique la quantité de musique contenue dans chaque mesure.",
-  heroImage: '/images/themes/11h-intervalles-et-signatures-rythmiques.svg',
+    "La signature rythmique est une fraction placée au début de la portée : elle indique la quantité de musique contenue dans chaque mesure. Le chiffre du haut indique la quantité, celui du bas l'unité. Selon la façon de regrouper les temps, une mesure peut être binaire, ternaire ou irrégulière.",
+  heroImage: '/images/themes/11h-signatures-rythmiques.svg',
   sections: [],
   exercises: [
-    // --- Les intervalles ---
-    {
-      id: id(4),
-      number: 1,
-      title: 'Qui est-ce ?',
-      lesson: [
-        "Les intervalles sont l'espacement entre deux notes. On les définit grâce aux tons et demi-tons qui les constituent. On compte les intervalles de la note de départ jusqu'à la note d'arrivée incluse : de do à sol, on compte do-ré-mi-fa-sol, soit 5 notes : c'est une quinte.",
-        "Pour reconnaître les intervalles à l'oreille, il est utile, voire nécessaire, d'avoir un repère auditif : une mélodie ou une chanson que l'on peut se chanter facilement dans la tête.",
-      ],
-      images: [{ src: `${IMG}/intervalles.svg`, alt: 'Les huit intervalles à partir de do : prime, seconde, tierce, quarte, quinte, sixte, septième et octave' }],
-      instructions: 'Écoute le début de chaque chanson, puis l’intervalle formé par ses deux premières notes différentes, et relie la chanson au bon intervalle.',
-      engine: 'mcq',
-      data: {
-        items: [
-          { question: '1) Malbrough s’en va-t-en guerre', sounds: [{ label: 'La chanson', notes: ['do4', 'mi4', 'mi4', 'mi4', 're4', 'mi4', 'fa4', 'mi4', 'mi4', 're4', 're4', 're4'] }, { label: 'L’intervalle', notes: ['do4', 'mi4'] }], options: SONG_INTERVALS, correctIndex: 1 },
-          { question: '2) La Marseillaise', sounds: [{ label: 'La chanson', notes: ['re4', 're4', 're4', 'sol4', 'sol4', 'la4', 'la4', 're5', 'si4', 'sol4'] }, { label: 'L’intervalle', notes: ['re4', 'sol4'] }], options: SONG_INTERVALS, correctIndex: 2 },
-          { question: '3) Une souris verte', sounds: [{ label: 'L’intervalle', notes: ['do4', 'la4'] }], options: SONG_INTERVALS, correctIndex: 4 },
-          { question: '4) Frère Jacques', sounds: [{ label: 'La chanson', notes: ['do4', 're4', 'mi4', 'do4', 'do4', 're4', 'mi4', 'do4'] }, { label: 'L’intervalle', notes: ['do4', 're4'] }], options: SONG_INTERVALS, correctIndex: 0 },
-          { question: '5) Over the Rainbow', sounds: [{ label: 'La chanson', notes: ['do4', 'do5', 'si4', 'sol4', 'la4', 'si4', 'do5'] }, { label: 'L’intervalle', notes: ['do4', 'do5'] }], options: SONG_INTERVALS, correctIndex: 5 },
-          { question: '6) Ah ! vous dirai-je, maman (Quand trois poules vont aux champs)', sounds: [{ label: 'La chanson', notes: ['do4', 'do4', 'sol4', 'sol4', 'la4', 'la4', 'sol4'] }, { label: 'L’intervalle', notes: ['do4', 'sol4'] }], options: SONG_INTERVALS, correctIndex: 3 },
-        ],
-      },
-    },
-    {
-      id: id(5),
-      number: 2,
-      title: 'À la quête des intervalles',
-      instructions: 'Nomme chaque intervalle.',
-      engine: 'interval-read',
-      data: {
-        items: [
-          { from: 'Sol4', to: 'Do4' },
-          { from: 'Do4', to: 'Ré4' },
-          { from: 'Do4', to: 'La4' },
-          { from: 'Do4', to: 'Do4' },
-          { from: 'La4', to: 'Fa4' },
-          { from: 'Do5', to: 'Do4' },
-          { from: 'Do4', to: 'Fa4' },
-          { from: 'Sol4', to: 'Do5' },
-          { from: 'Do5', to: 'Si4' },
-          { from: 'Ré5', to: 'Sol4' },
-          { from: 'Sol4', to: 'La4' },
-          { from: 'Mi4', to: 'Do4' },
-        ],
-      },
-    },
-    {
-      id: id(7),
-      number: 3,
-      title: 'L’inter… valle',
-      instructions:
-        "Écris les 7 intervalles à partir de do : place la note d'arrivée au-dessus du do (grisé) pour former l'intervalle demandé.",
-      engine: 'staff-write',
-      data: {
-        baseStep: -2,
-        noAccidentals: true,
-        labels: ['Seconde', 'Tierce', 'Quarte', 'Quinte', 'Sixte', 'Septième', 'Octave'],
-        targets: ['Ré', 'Mi', 'Fa', 'Sol', 'La', 'Si', 'Do'],
-      },
-    },
-    {
-      id: id(8),
-      number: 4,
-      title: 'Dictée d’intervalles',
-      instructions: 'Écoute les intervalles qui te sont joués (chaque fois à partir de do) et indique leur nom, dans leur ordre d’apparition.',
-      engine: 'mcq',
-      data: {
-        items: [
-          { question: 'Intervalle 1', synth: ['do4', 'sol4'], options: INTERVALS, correctIndex: 4 },
-          { question: 'Intervalle 2', synth: ['do4', 'mi4'], options: INTERVALS, correctIndex: 2 },
-          { question: 'Intervalle 3', synth: ['do4', 'do5'], options: INTERVALS, correctIndex: 7 },
-          { question: 'Intervalle 4', synth: ['do4', 're4'], options: INTERVALS, correctIndex: 1 },
-          { question: 'Intervalle 5', synth: ['do4', 'la4'], options: INTERVALS, correctIndex: 5 },
-          { question: 'Intervalle 6', synth: ['do4', 'do4'], options: INTERVALS, correctIndex: 0 },
-          { question: 'Intervalle 7', synth: ['do4', 'fa4'], options: INTERVALS, correctIndex: 3 },
-          { question: 'Intervalle 8', synth: ['do4', 'si4'], options: INTERVALS, correctIndex: 6 },
-        ],
-      },
-    },
-
     // --- Les signatures rythmiques ---
     {
       id: id(11),
-      number: 5,
+      number: 1,
       title: 'La signature rythmique',
       instructions:
         "La signature rythmique est une fraction qui indique la quantité de musique dans une mesure. Ses deux chiffres indiquent la quantité et l'unité. Que représente chacun d'eux ?",
@@ -126,7 +45,7 @@ const theme: ThemeContent = {
     },
     {
       id: id(13),
-      number: 6,
+      number: 2,
       title: 'Le temps, c’est des fractions',
       lesson: [
         "Dans une mesure binaire, le chiffre du bas indique l'unité de temps : 1 = la ronde, 2 = la blanche, 4 = la noire, 8 = la croche, 16 = la double croche (voir le diagramme). Le chiffre du haut indique combien de ces unités il y a dans la mesure, c'est-à-dire le nombre de temps.",
@@ -148,7 +67,7 @@ const theme: ThemeContent = {
     },
     {
       id: id(14),
-      number: 7,
+      number: 3,
       title: 'Dis, fractions',
       lesson: ["Dans une mesure ternaire (chiffre du bas : 8), chaque temps contient trois croches. Nombre de temps = chiffre du haut : 3."],
       instructions: 'Détermine le nombre de temps des signatures rythmiques ternaires ci-dessous.',
@@ -163,7 +82,7 @@ const theme: ThemeContent = {
     },
     {
       id: id(15),
-      number: 8,
+      number: 4,
       title: 'À l’irrégulière…',
       lesson: [
         "Dans une mesure irrégulière, on regroupe les unités en paquets de 2 et de 3. Chaque paquet correspond à un temps : 5/8 = 3 + 2, soit 2 temps.",
@@ -182,7 +101,7 @@ const theme: ThemeContent = {
     },
     {
       id: id(16),
-      number: 9,
+      number: 5,
       title: 'À l’envers…',
       lesson: [
         "Aide-mémoire — Quantité (chiffre du haut) : mesure binaire = nombre de temps souhaité ; mesure ternaire = nombre de temps × 3 ; mesure irrégulière = addition de paquets de 2 et de 3.",
@@ -202,7 +121,7 @@ const theme: ThemeContent = {
     },
     {
       id: id(17),
-      number: 10,
+      number: 6,
       title: 'Les opposés s’attirent',
       instructions: 'Indique la signature rythmique ternaire de chacun des cas suivants (nombre de temps souhaité × 3, sur 8).',
       engine: 'time-signature',
@@ -218,7 +137,7 @@ const theme: ThemeContent = {
     },
     {
       id: id(18),
-      number: 11,
+      number: 7,
       title: 'Créer des paquets',
       instructions:
         'Indique une signature rythmique irrégulière pour chacun des cas suivants : attribue un paquet de 3 ou de 2 à chaque temps souhaité, puis additionne le tout (sur 8 ou sur 16).',
@@ -233,39 +152,17 @@ const theme: ThemeContent = {
       },
     },
 
-    // --- Révision pour le test, sur le modèle de l'exercice n° 19 du dossier ---
+    // --- Révision pour le test (consignes C et D de l'exercice n° 19 du dossier) ---
     {
       id: id(19),
-      number: 12,
-      title: 'Révisons…',
+      number: 8,
+      title: 'Révision',
       instructions: 'Révise pour le test : réalise chaque consigne et vérifie tes réponses au fur et à mesure.',
       engine: 'composite',
       data: {
         parts: [
           {
-            title: 'A) Indique le nom de ces intervalles (4 points)',
-            engine: 'interval-read',
-            data: {
-              items: [
-                { from: 'Mi4', to: 'Do5', harmonic: true },
-                { from: 'Ré4', to: 'La4', harmonic: true },
-                { from: 'Mi4', to: 'Sol4', harmonic: true },
-                { from: 'Ré4', to: 'Sol4', harmonic: true },
-              ],
-            },
-          },
-          {
-            title: 'B) Écris cinq intervalles différents en dessinant la note d’arrivée au-dessus du do (4 points)',
-            engine: 'staff-write',
-            data: {
-              baseStep: -2,
-              noAccidentals: true,
-              labels: ['Tierce', 'Quinte', 'Seconde', 'Octave', 'Sixte'],
-              targets: ['Mi', 'Sol', 'Ré', 'Do', 'La'],
-            },
-          },
-          {
-            title: 'C) Indique les signatures rythmiques des éléments suivants (3 points)',
+            title: 'A) Indique les signatures rythmiques des éléments suivants (3 points)',
             engine: 'time-signature',
             data: {
               mode: 'write',
@@ -277,7 +174,7 @@ const theme: ThemeContent = {
             },
           },
           {
-            title: 'D) Indique le nombre de temps des mesures suivantes (5 points)',
+            title: 'B) Indique le nombre de temps des mesures suivantes (5 points)',
             engine: 'mcq',
             data: {
               items: [
