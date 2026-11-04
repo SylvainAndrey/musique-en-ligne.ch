@@ -97,6 +97,7 @@ mel-exercise.is-done ~ .exo-card__badge {
 }
 .exo__result.is-correct { color: var(--color-success); }
 .exo-reveal-btn { font-size: 0.85rem; }
+.exo-reveal-btn[hidden] { display: none; }
 
 /* fill-blank */
 .fb__row {
@@ -342,7 +343,8 @@ mel-exercise.is-done ~ .exo-card__badge {
 .sw__ghost { fill: var(--color-ink); opacity: 0.25; pointer-events: none; }
 .sw__acc { font-size: 1.5rem; fill: var(--color-ink); pointer-events: none; font-family: 'Noto Music', 'Segoe UI Symbol', serif; }
 .sw__num { font-size: 0.85rem; font-weight: 600; fill: var(--color-ink-soft); font-family: var(--font-body); }
-.sw g, .sw text.sf__clef { pointer-events: none; }
+.sw g, .staff-clef { pointer-events: none; }
+.staff-clef { fill: var(--color-ink); }
 .sw__controls { display: grid; margin: 0.3rem 0 0.5rem; }
 .sw__ctrl { display: flex; justify-content: center; gap: 0.25rem; }
 .sw__accbtn {

@@ -1,6 +1,7 @@
 import type { EngineRenderer } from './types';
 import { createRevealButton } from './reveal';
 import { playPianoNote } from '../audio';
+import { appendTrebleClef } from './clef';
 
 /**
  * « Écris sur la portée » : l'élève clique sur la portée (clé de sol) pour placer une note dans
@@ -89,9 +90,7 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
     const y = STAFF_TOP + i * LINE_GAP;
     svg.appendChild(el('line', { x1: 10, y1: y, x2: width - 10, y2: y, class: 'sf__line' }));
   }
-  const clef = el('text', { x: 16, y: noteY(2) + 14, class: 'sf__clef' });
-  clef.textContent = '𝄞';
-  svg.appendChild(clef);
+  appendTrebleClef(svg, 16, BOTTOM_LINE_Y, LINE_GAP);
 
   const state: { step: number | null; acc: Accidental; group: SVGGElement; col: SVGRectElement; buttons: HTMLButtonElement[] }[] = [];
   const controls = document.createElement('div');

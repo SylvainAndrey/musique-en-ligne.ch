@@ -1,5 +1,6 @@
 import type { EngineRenderer } from './types';
 import { createRevealButton } from './reveal';
+import { appendTrebleClef } from './clef';
 
 type Accidental = '#' | 'b';
 
@@ -98,12 +99,7 @@ export const renderScaleFix: EngineRenderer = (container, rawData, ctx) => {
       svg.appendChild(line);
     }
 
-    const clef = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    clef.setAttribute('x', '20');
-    clef.setAttribute('y', String(noteY(2) + 14));
-    clef.setAttribute('class', 'sf__clef');
-    clef.textContent = '𝄞';
-    svg.appendChild(clef);
+    appendTrebleClef(svg as SVGSVGElement, 18, BOTTOM_LINE_Y, LINE_GAP);
 
     const accidentalTexts: HTMLElement[] = [];
 
