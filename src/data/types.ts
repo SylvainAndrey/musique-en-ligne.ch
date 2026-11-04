@@ -30,6 +30,7 @@ export type ExerciseEngine =
   | 'iframe-game'
   | 'staff-write'
   | 'piano-find'
+  | 'interval-read'
   | 'placeholder';
 
 export interface ExerciseDef {

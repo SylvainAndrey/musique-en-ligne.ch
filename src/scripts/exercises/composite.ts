@@ -8,6 +8,8 @@ import { renderMatching } from './matching';
 import { renderStaffWrite } from './staff-write';
 import { renderPianoFind } from './piano-find';
 import { renderScaleFix } from './scale-fix';
+import { renderIntervalRead } from './interval-read';
+import { renderListenMeter } from './listen-meter';
 
 /**
  * Moteur "composite" : regroupe plusieurs sous-exercices (potentiellement de moteurs différents)
@@ -26,6 +28,8 @@ const SUB_ENGINES: Record<string, EngineRenderer> = {
   'staff-write': renderStaffWrite,
   'piano-find': renderPianoFind,
   'scale-fix': renderScaleFix,
+  'interval-read': renderIntervalRead,
+  'listen-meter': renderListenMeter,
 };
 
 interface CompositePart {

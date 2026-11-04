@@ -18,6 +18,12 @@ type Accidental = '#' | 'b' | null;
 interface StaffWriteData {
   targets?: string[];
   free?: { count: number; sharps: number; flats: number };
+  /** Libellés affichés au-dessus des cases à la place du nom des notes (ex. noms d'intervalles). */
+  labels?: string[];
+  /** Note de départ déjà écrite (grisée) dans chaque case, ex. -2 pour Do4 : l'élève écrit la note d'arrivée au-dessus. */
+  baseStep?: number;
+  /** Masque les boutons dièse/bémol (notes naturelles uniquement). */
+  noAccidentals?: boolean;
 }
 
 // Position diatonique en clé de sol : step 0 = Mi4 (1re ligne), alignée sur note-read.ts et scale-fix.ts.
@@ -74,7 +80,9 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
 
   const help = document.createElement('p');
   help.className = 'sw__help';
-  help.textContent = 'Clique sur la portée pour placer la note de chaque case, puis choisis son altération sous la portée.';
+  help.textContent = data.noAccidentals
+    ? 'Clique sur la portée pour placer la note de chaque case.'
+    : 'Clique sur la portée pour placer la note de chaque case, puis choisis son altération sous la portée.';
   wrap.appendChild(help);
 
   const scroller = document.createElement('div');
@@ -116,7 +124,7 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
     const g = s.group;
     g.replaceChildren();
     if (s.step === null) return;
-    const x = FIRST_X + i * COL_W + COL_W / 2;
+    const x = FIRST_X + i * COL_W + COL_W / 2 + (data.baseStep !== undefined ? 14 : 0);
     const y = noteY(s.step);
     const ledgers: number[] = [];
     if (s.step < 0) for (let k = -2; k >= s.step; k -= 2) ledgers.push(k);
@@ -132,7 +140,11 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
 
   for (let i = 0; i < count; i++) {
     const x0 = FIRST_X + i * COL_W;
-    if (data.targets) {
+    if (data.labels?.[i]) {
+      const num = el('text', { x: x0 + COL_W / 2, y: 22, class: 'sw__num', 'text-anchor': 'middle' });
+      num.textContent = `${i + 1}) ${data.labels[i]}`;
+      svg.appendChild(num);
+    } else if (data.targets) {
       const num = el('text', { x: x0 + COL_W / 2, y: 22, class: 'sw__num', 'text-anchor': 'middle' });
       num.textContent = `${i + 1}) ${data.targets[i].replace('#', '♯').replace(/(?<=[a-zé])b$/i, '♭')}`;
       svg.appendChild(num);
@@ -144,6 +156,15 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
     const col = el('rect', { x: x0 + 4, y: 28, width: COL_W - 8, height: HEIGHT - 36, rx: 6, class: 'sw__col' });
     const group = el('g', {});
     svg.append(col, group);
+    if (data.baseStep !== undefined) {
+      const bx = x0 + COL_W / 2 - 14;
+      const base = el('g', { class: 'sw__base' });
+      const bs = data.baseStep;
+      if (bs < 0) for (let k = -2; k >= bs; k -= 2) base.appendChild(el('line', { x1: bx - 16, y1: noteY(k), x2: bx + 16, y2: noteY(k), class: 'sf__ledger' }));
+      if (bs > 8) for (let k = 10; k <= bs; k += 2) base.appendChild(el('line', { x1: bx - 16, y1: noteY(k), x2: bx + 16, y2: noteY(k), class: 'sf__ledger' }));
+      base.appendChild(el('ellipse', { cx: bx, cy: noteY(bs), rx: 10, ry: 7.5, class: 'sw__base-note' }));
+      svg.appendChild(base);
+    }
 
     const ctrl = document.createElement('div');
     ctrl.className = 'sw__ctrl';
@@ -165,6 +186,7 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
       buttons.push(b);
       ctrl.appendChild(b);
     });
+    if (data.noAccidentals) ctrl.style.visibility = 'hidden';
     controls.appendChild(ctrl);
 
     state.push({ step: null, acc: null, group, col, buttons });
@@ -172,7 +194,7 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
     col.addEventListener('pointermove', (e) => {
       if (wrap.classList.contains('is-locked')) return;
       const step = stepFromEvent(e);
-      ghost.setAttribute('cx', String(x0 + COL_W / 2));
+      ghost.setAttribute('cx', String(x0 + COL_W / 2 + (data.baseStep !== undefined ? 14 : 0)));
       ghost.setAttribute('cy', String(noteY(step)));
       ghost.style.display = '';
     });
@@ -226,7 +248,8 @@ export const renderStaffWrite: EngineRenderer = (container, rawData, ctx) => {
     if (data.targets) {
       targets.forEach((t, i) => {
         const s = state[i];
-        const ok = s.step !== null && letterOf(s.step) === t.letter && s.acc === t.acc;
+        const above = data.baseStep === undefined || (s.step !== null && s.step > data.baseStep);
+        const ok = s.step !== null && above && letterOf(s.step) === t.letter && s.acc === t.acc;
         s.col.classList.toggle('is-correct', ok);
         s.col.classList.toggle('is-wrong', !ok);
         if (ok) correct += 1;

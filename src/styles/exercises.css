@@ -340,6 +340,8 @@ mel-exercise.is-done ~ .exo-card__badge {
 .sw__col:hover { fill: var(--color-accent-soft); fill-opacity: 0.35; }
 .sw__col.is-correct { fill: var(--color-success-bg); fill-opacity: 0.6; stroke: var(--color-success); }
 .sw__col.is-wrong { fill: var(--color-error-bg); fill-opacity: 0.6; stroke: var(--color-error); }
+.sw__base-note { fill: var(--color-ink-faint); }
+.sw__base { pointer-events: none; }
 .sw__ghost { fill: var(--color-ink); opacity: 0.25; pointer-events: none; }
 .sw__acc { font-size: 1.5rem; fill: var(--color-ink); pointer-events: none; font-family: 'Noto Music', 'Segoe UI Symbol', serif; }
 .sw__num { font-size: 0.85rem; font-weight: 600; fill: var(--color-ink-soft); font-family: var(--font-body); }
@@ -353,6 +355,18 @@ mel-exercise.is-done ~ .exo-card__badge {
 }
 .sw__accbtn.is-on { border-color: var(--color-accent); background: var(--color-accent-soft); }
 .sw.is-locked .sw__col { pointer-events: none; }
+
+/* nommer un intervalle (interval-read) */
+.ir__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; margin-bottom: 0.5rem; }
+.ir__card { border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 0.6rem 0.7rem 0.75rem; background: var(--color-bg-raised); }
+.ir__card.is-correct { border-color: var(--color-success); background: var(--color-success-bg); }
+.ir__card.is-wrong { border-color: var(--color-error); background: var(--color-error-bg); }
+.ir__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.ir__label { font-weight: 600; }
+.ir__play { font-size: 0.8rem; padding: 0.3em 0.8em; }
+.ir__staff { width: 100%; height: auto; display: block; margin: 0.2rem 0 0.4rem; }
+.ir__select { width: 100%; padding: 0.45rem 0.5rem; border-radius: var(--radius-sm); border: 1.5px solid var(--color-border); background: var(--color-bg); color: var(--color-ink); font: inherit; }
+.ir__answer { margin-top: 0.4rem; font-size: 0.85rem; color: var(--color-accent); font-weight: 600; }
 
 /* trouver la touche du piano (piano-find) */
 .pf__targets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem; }
