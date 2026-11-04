@@ -10,6 +10,7 @@ import { renderPianoFind } from './piano-find';
 import { renderScaleFix } from './scale-fix';
 import { renderIntervalRead } from './interval-read';
 import { renderListenMeter } from './listen-meter';
+import { renderTimeSignature } from './time-signature';
 
 /**
  * Moteur "composite" : regroupe plusieurs sous-exercices (potentiellement de moteurs différents)
@@ -30,6 +31,7 @@ const SUB_ENGINES: Record<string, EngineRenderer> = {
   'scale-fix': renderScaleFix,
   'interval-read': renderIntervalRead,
   'listen-meter': renderListenMeter,
+  'time-signature': renderTimeSignature,
 };
 
 interface CompositePart {

@@ -9,6 +9,8 @@ interface McqItem {
   correctIndex: number;
   media?: MediaRef;
   synth?: string[];
+  /** Plusieurs extraits à écouter, chacun avec son libellé (ex. la chanson, puis l'intervalle). */
+  sounds?: { label: string; notes: string[] }[];
   /** Notes jouées simultanément (accord), plutôt qu'en séquence. */
   chord?: string[];
   /** Image fixe (ex. portrait d'un artiste) affichée à côté du média audio. */
@@ -84,6 +86,12 @@ export const renderMcq: EngineRenderer = (container, rawData, ctx) => {
 
     renderMediaRef(block, item.media);
     renderSynthButton(block, item.synth);
+    if (item.sounds?.length) {
+      const row = document.createElement('div');
+      row.className = 'mcq__sounds';
+      item.sounds.forEach((snd) => renderSynthButton(row, snd.notes, 420, snd.label));
+      block.appendChild(row);
+    }
     renderChordButton(block, item.chord);
 
     if (item.image) {

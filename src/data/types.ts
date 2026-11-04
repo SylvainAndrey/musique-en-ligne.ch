@@ -31,6 +31,7 @@ export type ExerciseEngine =
   | 'staff-write'
   | 'piano-find'
   | 'interval-read'
+  | 'time-signature'
   | 'placeholder';
 
 export interface ExerciseDef {

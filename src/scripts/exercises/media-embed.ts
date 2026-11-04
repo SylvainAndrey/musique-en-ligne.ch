@@ -34,12 +34,12 @@ export function renderMediaRef(container: HTMLElement, media?: MediaRef): void {
  * (ex: ['do4','mi4','sol4']). Utile quand aucun enregistrement audio de référence n'existe :
  * la mélodie est générée par le site lui-même, donc la bonne réponse est toujours vérifiable.
  */
-export function renderSynthButton(container: HTMLElement, notes?: string[], noteMs = 420): void {
+export function renderSynthButton(container: HTMLElement, notes?: string[], noteMs = 420, label = 'Écouter'): void {
   if (!notes || notes.length === 0) return;
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'btn btn-ghost exo-synth-btn';
-  btn.textContent = '▶ Écouter';
+  btn.textContent = `▶ ${label}`;
   btn.addEventListener('click', () => {
     const freqs = notes.map((n) => C_MAJOR_FREQ[n] ?? 440);
     playSequence(freqs, noteMs);

@@ -368,6 +368,21 @@ mel-exercise.is-done ~ .exo-card__badge {
 .ir__select { width: 100%; padding: 0.45rem 0.5rem; border-radius: var(--radius-sm); border: 1.5px solid var(--color-border); background: var(--color-bg); color: var(--color-ink); font: inherit; }
 .ir__answer { margin-top: 0.4rem; font-size: 0.85rem; color: var(--color-accent); font-weight: 600; }
 
+/* signatures rythmiques (time-signature) */
+.mcq__sounds { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem; }
+.ts__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.9rem; margin-bottom: 0.5rem; }
+.ts__card { border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 0.7rem; background: var(--color-bg-raised); display: flex; flex-direction: column; gap: 0.5rem; }
+.ts__card.is-correct { border-color: var(--color-success); background: var(--color-success-bg); }
+.ts__card.is-wrong { border-color: var(--color-error); background: var(--color-error-bg); }
+.ts__label { font-weight: 600; text-align: left; }
+.ts__image { width: 112px; height: auto; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+.ts__field { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; color: var(--color-ink-soft); }
+.ts__select, .ts__digit { padding: 0.4rem 0.5rem; border-radius: var(--radius-sm); border: 1.5px solid var(--color-border); background: var(--color-bg); color: var(--color-ink); font: inherit; }
+.ts__fraction { display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; align-self: flex-start; }
+.ts__digit { width: 4.2rem; text-align: center; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 1.3rem; }
+.ts__bar { width: 4.2rem; height: 3px; background: var(--color-ink); border-radius: 2px; }
+.ts__answer { font-size: 0.85rem; color: var(--color-accent); font-weight: 600; }
+
 /* trouver la touche du piano (piano-find) */
 .pf__targets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem; }
 .pf__target {
