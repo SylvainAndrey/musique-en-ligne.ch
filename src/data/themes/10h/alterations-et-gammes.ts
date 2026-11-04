@@ -7,15 +7,11 @@ const SLUG = 'alterations-et-gammes';
 const id = (n: number) => `${GRADE}-${SLUG}-${n}`;
 const IMG = '/images/10h-alterations-et-gammes';
 
-/** Réponses acceptées pour une note altérée, ex. alt('Ré', '#') → « ré# », « ré dièse »… */
-function alt(note: string, accidental: '#' | 'b' | 'n'): string[] {
-  const n = note.toLowerCase();
-  if (accidental === '#') return [`${n}#`, `${n} dièse`];
-  if (accidental === 'b') return [`${n}b`, `${n} bémol`, `${n}♭`];
-  return [`${n} bécarre`, `${n}♮`, `${n} naturel`];
-}
 const INTERVAL_OPTIONS = ['1 ton', '½ ton'];
 const MAJ_MIN = ['Majeur', 'Mineur'];
+// Choix de 5 notes proposés pour les notes altérées de l'exercice « Qui est-ce ? ».
+const NOTES_A = ['Do♯', 'Ré♯', 'Ré♮', 'Fa♯', 'Sol♯'];
+const NOTES_B = ['Do♯', 'Do♮', 'Ré♯', 'Ré♮', 'Fa♯'];
 
 const theme: ThemeContent = {
   grade: GRADE,
@@ -108,38 +104,45 @@ const theme: ThemeContent = {
       number: 6,
       title: 'Qui est-ce ?',
       instructions:
-        "Voici deux extraits de partitions connues. Donne le nom de toutes les notes possédant une altération (dans l'ordre où elles apparaissent), ainsi que le titre du morceau.",
+        "Voici deux extraits de partitions connues. Choisis le nom de chaque note possédant une altération (dans l'ordre où elles apparaissent), puis donne le titre des deux morceaux.",
       engine: 'composite',
       data: {
         parts: [
           {
-            title: 'Extrait A',
-            engine: 'fill-blank',
+            title: 'Extrait A — les notes altérées',
+            engine: 'mcq',
             data: {
-              layout: 'list',
               image: `${IMG}/lettre-a-elise.png`,
               imageAlt: 'Extrait de partition A',
               items: [
-                { id: 'a1', prompt: '1re note altérée', accepted: alt('Ré', '#') },
-                { id: 'a2', prompt: '2e note altérée', accepted: alt('Ré', 'n') },
-                { id: 'a3', prompt: '3e note altérée', accepted: alt('Sol', '#') },
-                { id: 'a-titre', prompt: 'Titre du morceau', accepted: ['lettre à élise', 'la lettre à élise', 'für elise', 'fur elise', 'pour élise', 'lettre à élise de beethoven'] },
+                { question: '1re note altérée', options: NOTES_A, correctIndex: 1 },
+                { question: '2e note altérée', options: NOTES_A, correctIndex: 2 },
+                { question: '3e note altérée', options: NOTES_A, correctIndex: 4 },
               ],
             },
           },
           {
-            title: 'Extrait B',
-            engine: 'fill-blank',
+            title: 'Extrait B — les notes altérées',
+            engine: 'mcq',
             data: {
-              layout: 'list',
               image: `${IMG}/vol-du-bourdon.png`,
               imageAlt: 'Extrait de partition B',
               items: [
-                { id: 'b1', prompt: '1re note altérée', accepted: alt('Ré', '#') },
-                { id: 'b2', prompt: '2e note altérée', accepted: alt('Ré', 'n') },
-                { id: 'b3', prompt: '3e note altérée', accepted: alt('Do', '#') },
-                { id: 'b4', prompt: '4e note altérée', accepted: alt('Do', 'n') },
-                { id: 'b-titre', prompt: 'Titre du morceau', accepted: ['le vol du bourdon', 'vol du bourdon'] },
+                { question: '1re note altérée', options: NOTES_B, correctIndex: 2 },
+                { question: '2e note altérée', options: NOTES_B, correctIndex: 3 },
+                { question: '3e note altérée', options: NOTES_B, correctIndex: 0 },
+                { question: '4e note altérée', options: NOTES_B, correctIndex: 1 },
+              ],
+            },
+          },
+          {
+            title: 'Les titres des morceaux',
+            engine: 'fill-blank',
+            data: {
+              layout: 'list',
+              items: [
+                { id: 'a-titre', prompt: 'Extrait A', accepted: ['lettre à élise', 'la lettre à élise', 'für elise', 'fur elise', 'pour élise', 'lettre à élise de beethoven'] },
+                { id: 'b-titre', prompt: 'Extrait B', accepted: ['le vol du bourdon', 'vol du bourdon'] },
               ],
             },
           },
@@ -151,11 +154,13 @@ const theme: ThemeContent = {
       number: 7,
       title: 'Les dents de la mère',
       instructions:
-        "Écoute le motif du leitmotiv du film « Les Dents de la mer ». Les deux notes qui le composent sont-elles séparées d'un ton ou d'un demi-ton ?",
+        "Écoute le motif du leitmotiv du film « Les Dents de la mer ». Les deux notes qui le composent sont-elles séparées d'un ton ou d'un demi-ton ? Trouve ensuite deux autres paires de notes qui reproduisent le même motif : l'une avec un dièse, l'autre avec un bémol.",
       engine: 'mcq',
       data: {
         items: [
-          { question: 'Le motif des « Dents de la mer »', synth: ['mi3', 'fa3', 'mi3', 'fa3', 'mi3', 'fa3', 'mi3', 'fa3'], options: INTERVAL_OPTIONS, correctIndex: 1 },
+          { question: 'Le motif des « Dents de la mer » : ton ou demi-ton ?', synth: ['mi3', 'fa3', 'mi3', 'fa3', 'mi3', 'fa3', 'mi3', 'fa3'], options: INTERVAL_OPTIONS, correctIndex: 1 },
+          { question: 'Une autre paire de notes qui reproduit le motif, avec un dièse :', options: ['Fa♯ – Sol♯', 'Do♯ – Ré', 'La♯ – Do', 'Ré♯ – Fa'], correctIndex: 1 },
+          { question: 'Une autre paire de notes qui reproduit le motif, avec un bémol :', options: ['Si♭ – Do', 'Mi♭ – Fa', 'La – Si♭', 'La♭ – Si♭'], correctIndex: 2 },
         ],
       },
     },

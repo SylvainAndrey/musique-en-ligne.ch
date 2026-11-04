@@ -1,4 +1,5 @@
 import type { EngineRenderer } from './types';
+import { appendTrebleClef } from './clef';
 import { createRevealButton } from './reveal';
 
 type Clef = 'treble' | 'bass';
@@ -38,10 +39,6 @@ const CLEF_LETTERS: Record<Clef, string[]> = {
   treble: ['Mi', 'Fa', 'Sol', 'La', 'Si', 'Do', 'Ré'], // 1ère ligne = Mi4
   bass: ['Sol', 'La', 'Si', 'Do', 'Ré', 'Mi', 'Fa'], // 1ère ligne = Sol2
 };
-const CLEF_GLYPH: Record<Clef, string> = { treble: '𝄞', bass: '𝄢' };
-// Step autour duquel le glyphe de la clé doit être centré (2e ligne pour sol, 4e ligne pour fa).
-const CLEF_ANCHOR_STEP: Record<Clef, number> = { treble: 2, bass: 6 };
-const CLEF_GLYPH_Y_OFFSET: Record<Clef, number> = { treble: 14 };
 
 /**
  * Clé de fa dessinée en SVG (et non le caractère Unicode 𝄢) : le rendu du glyphe dépend de polices
@@ -129,12 +126,7 @@ function buildStaffSvg(step: number, clefType: Clef = 'treble'): SVGSVGElement {
   if (clefType === 'bass') {
     svg.appendChild(buildBassClef());
   } else {
-    const clef = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    clef.setAttribute('x', '20');
-    clef.setAttribute('y', String(noteY(CLEF_ANCHOR_STEP[clefType]) + CLEF_GLYPH_Y_OFFSET[clefType]));
-    clef.setAttribute('class', `nr__clef nr__clef--${clefType}`);
-    clef.textContent = CLEF_GLYPH[clefType];
-    svg.appendChild(clef);
+    appendTrebleClef(svg, 20, BOTTOM_LINE_Y, LINE_GAP);
   }
 
   const noteX = width / 2 + 30;

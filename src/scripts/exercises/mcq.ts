@@ -26,6 +26,9 @@ interface ChordPoolEntry {
 
 interface McqData {
   media?: MediaRef;
+  /** Image affichée en pleine largeur au-dessus de toutes les questions (ex. extrait de partition). */
+  image?: string;
+  imageAlt?: string;
   items: McqItem[];
   /** Si vrai, l'ordre des questions est mélangé à chaque affichage et les questions sont numérotées automatiquement ("Extrait 1, 2, …"). */
   shuffle?: boolean;
@@ -62,6 +65,13 @@ export const renderMcq: EngineRenderer = (container, rawData, ctx) => {
   wrap.className = 'mcq';
 
   renderMediaRef(wrap, data.media);
+  if (data.image) {
+    const img = document.createElement('img');
+    img.className = 'mcq__image mcq__image--wide';
+    img.src = data.image;
+    img.alt = data.imageAlt ?? '';
+    wrap.appendChild(img);
+  }
 
   const baseItems = data.chordPool ? buildItemsFromChordPool(data.chordPool) : data.items;
   const items = data.shuffle ? shuffle(baseItems) : baseItems;
